@@ -1,0 +1,24 @@
+<div id="dropArea" class="mapBox">
+	<img id="map" class="absolutePos" src="IMG/testmap.png">
+	
+	<!--Draw tile names-->
+	<div ng-repeat="(yIndex,row) in rows" class="absolutePos" ng-style="{top: determineGlowY(yIndex)}">
+		<div class="glowBox" ng-repeat="(indexX,column) in columns" title="{{row}}, {{column}}" ng-style="{left: determineGlowX(indexX)}"></div>
+	</div>
+	
+	<!--Draw characters-->
+	<div ng-repeat="char in charaData">
+		<div id="char_{{$index}}" ng-if="validPosition(char.position)" ng-click="displayData('char_'+$index)" class="absolutePos charDiv hoverImage" title="{{char.position}}" ng-style="{top: determineCharY(char.position), left: determineCharX(char.position)}">
+			<!--Paired unit sprite-->
+			<!--<div ng-if="isPaired(char.pairUpPartner)" class="charDiv mapCharOffsetLeft">
+				<img ng-src="{{getPairUnitIcon(char.pairUpPartner, 0)}}" class="mapCharCentered dimImage">
+			</div>-->
+			<!--Unit sprite-->
+			<img ng-src="{{char.spriteUrl}}" class="mapCharCentered" style="height: 31px; width: 31px;">
+			<div class="healthBarBack"></div>
+			<div class="healthBarFront" ng-style="{width:((char.currHp/char.maxHp)*28)+'px'}"></div>
+			<div class="healthBarBorder"></div>
+			<div ng-if="isPaired(char.pairUpPartner)" class="pairUpIcon"><img src="IMG/shield_pairup.png"></div>
+		</div>
+	</div>
+</div>
