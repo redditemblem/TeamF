@@ -3,7 +3,7 @@
 	
 	<!--Draw tile names-->
 	<div ng-repeat="(yIndex,row) in rows" class="absolutePos" ng-style="{top: determineGlowY(yIndex)}">
-		<div class="glowBox" ng-repeat="(indexX,column) in columns" title="{{row}}, {{column}}" ng-style="{left: determineGlowX(indexX)}"></div>
+		<div class="glowBox" ng-repeat="(indexX,column) in columns" title="{{column}}, {{row}}" ng-style="{left: determineGlowX(indexX)}"></div>
 	</div>
 	
 	<!--Draw characters-->
