@@ -1,5 +1,7 @@
 <div id="dropArea" class="mapBox">
-	<img id="map" class="absolutePos" src="IMG/testmap.png">
+	<div ng-repeat="map in maps">
+		<img id="map" class="absolutePos" ng-src="{{map}}">
+	</div>
 	
 	<!--Draw tile names-->
 	<div ng-repeat="(yIndex,row) in rows" class="absolutePos" ng-style="{top: determineGlowY(yIndex)}">
@@ -16,7 +18,7 @@
 			<!--Unit sprite-->
 			<img ng-src="{{char.spriteUrl}}" class="mapCharCentered" style="height: 31px; width: 31px;">
 			<div class="healthBarBack"></div>
-			<div class="healthBarFront" ng-style="{width:((char.currHp/char.maxHp)*28)+'px'}"></div>
+			<div class="healthBarFront" ng-style="{width:((char.currHp/char.maxHp)*27)+'px'}"></div>
 			<div class="healthBarBorder"></div>
 			<!--<div ng-if="isPaired(char.pairUpPartner)" class="pairUpIcon"><img src="IMG/shield_pairup.png"></div>-->
 		</div>
@@ -35,11 +37,44 @@
 			<span style="font-size: 25px;">{{char.name}}</span><br/>
 			<span style="font-size: 15px;">Lvl. {{char.lvl}} {{char.class}}</span>
 		</div>
+		<!--Experience bar-->
 		<div class="infoElement redText charExpPos">
 			EXP: {{char.exp}}
 			<div class="expBarBack"></div>
 			<div class="expBarFront" ng-style="{width: ((char.exp/100) * 226)+'px'}"></div>
-			<div class="expBarBorder"></div>
+			<!--<div class="expBarBorder"></div>-->
 		</div>
+		<!--HP-->
+		<div class="infoElement darkTan tanText HpPos">
+			<div class="HPText">HP</div>
+			<div class="HPFractionPos">
+				<span class="currHPText">{{char.currHp}} /</span>
+				<span class="totalHPText">{{char.maxHp}}</span>
+			</div>
+		</div>
+		<!--Hit, Atk, Crit, Avo-->
+		<div class="infoElement darkTan tanText statsPos">
+			<div class="hitPos">
+				<span class="statNameText">Hit</span>
+				<span class="statText">-</span>
+			</div>
+			<div class="critPos">
+				<span class="statNameText">Crit</span>
+				<span class="statText">-</span>
+			</div>
+			<div class="atkPos">
+				<span class="statNameText">Atk</span>
+				<span class="statText">{{char.Str}}</span>
+			</div>
+			<div class="avoidPos">
+				<span class="statNameText">Avo</span>
+				<span class="statText">-</span>
+			</div>
+		</div>
+		<!--Stats-->
+		<div ng-repeat="stat in statsList" class="infoElement darkTan tanText statBox" ng-style="{top: stat[2], left: stat[3]}">
+			<span class="indentedStatLabel">{{stat[0]}}</span>
+			<span class="indentedStat">{{char[stat[0]]}}</span>
+		</div>	
 	</div>
 </div>

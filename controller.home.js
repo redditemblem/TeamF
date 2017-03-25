@@ -1,15 +1,17 @@
 app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', function ($scope, $location, $interval, DataService) {
 	var onLoad = checkData();
+	$scope.maps = ["IMG/testmap.png"];
 	$scope.rows = ["1"];
     $scope.columns = ["1"];
 	$scope.statsList = [
-	                ["Str", "Strength. Affects damage the unit deals with physical attacks.", "5px", "5px"],
-	                ["Mag", "Magic. Affects damage the unit deals with magical attacks.", "29px", "14px"],
-	                ["Skl", "Skill. Affects hit rate and the frequency of critical hits.", "53px", "38px"],
-	                ["Spd", "Speed. Affects Avo. Unit strikes twice if 5 higher than opponent.", "72px", "45px"],
-	                ["Lck", "Luck. Has various effects. Lowers risk of enemy criticals.", "96px", "60px"],
-	                ["Def", "Defense. Reduces damage from physical attacks.", "106px", "76px"],
-	                ["Res", "Resistance. Reduces damage from physical attacks.", "109px", "94px"]
+	                ["Str", "Strength. Affects damage the unit deals with physical attacks.",    "215px", "200px"],
+	                ["Mag", "Magic. Affects damage the unit deals with magical attacks.",        "240px", "200px"],
+	                ["Skl", "Skill. Affects hit rate and the frequency of critical hits.",       "265px", "200px"],
+	                ["Spd", "Speed. Affects Avo. Unit strikes twice if 5 higher than opponent.", "290px", "200px"],
+	                ["Lck", "Luck. Has various effects. Lowers risk of enemy criticals.",        "215px", "315px"],
+	                ["Def", "Defense. Reduces damage from physical attacks.",                    "240px", "315px"],
+	                ["Res", "Resistance. Reduces damage from physical attacks.",                 "265px", "315px"],
+					["Mov", "Movement. Affects how many blocks a unit can move in a turn.",      "290px", "315px"]
 	               ];
 	
 	//Interval timers

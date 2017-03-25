@@ -48,7 +48,7 @@ img{
 
 .healthBarBack{
 	position: absolute;
-	width: 28px;
+	width: 27px;
 	height: 2px;
 	left: 2px;
 	top: 28px;
@@ -65,7 +65,7 @@ img{
 
 .healthBarBorder{
 	position: absolute;
-	width: 27px;
+	width: 26px;
 	height: 1px;
 	left: 2px;
 	top: 28px;
@@ -77,7 +77,7 @@ img{
 	width: calc(100% - 2px);
 	height: 5px;
 	left: 2px;
-	top: 15px;
+	top: 17px;
 	background-color: dimgray;
 }
 
@@ -85,7 +85,7 @@ img{
 	position: absolute;
 	height: 5px;
 	left: 2px;
-	top: 15px;
+	top: 17px;
 	background-color: red;
 }
 
@@ -94,7 +94,7 @@ img{
 	width: calc(100% - 4px);
 	height: 4px;
 	left: 2px;
-	top: 15px;
+	top: 17px;
 	border: 1px solid black;
 }
 
