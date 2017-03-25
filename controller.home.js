@@ -215,7 +215,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
 			return "0px";
     	pos = pos.substring(0,pos.indexOf(",")); //grab first number
     	pos = parseInt(pos);
-    	return ((pos*(boxWidth+gridWidth))) + "px";
+    	return ((pos-1)*(boxWidth+gridWidth)) + "px";
     };
     
     //Using a character's coordinates, calculates their vertical
@@ -223,10 +223,10 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     $scope.determineCharY = function(pos){
 		if(pos == "Not Deployed")
 			return "0px";
-    	pos = pos.substring(pos.indexOf(",", pos.length)); //grab first char
+    	pos = pos.substring(pos.indexOf(",")+1, pos.length); //grab first char
 		pos = pos.trim();
     	pos = parseInt(pos);
-    	return (pos*(boxWidth+gridWidth)) + "px";
+    	return ((pos-1)*(boxWidth+gridWidth)) + "px";
     };
 
     //***********************\\

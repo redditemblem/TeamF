@@ -1,6 +1,6 @@
 .characterInfo{
 	background-color: #DAAC5E;
-	height:218px;
+	height:300px;
 	width:631px;
 	left:0px;
 	top:20px;
@@ -187,10 +187,13 @@
 	height:26px;
 }
 
-.movExpPos{
-	width:85px;
-	left:155px;
+.charExpPos{
+	width:230px;
 	height:25px;
+	top:80px;
+	left: calc(50% - 115px);
+	font-size: 12px;
+	text-align: center;
 }
 
 .HpPos{
@@ -246,11 +249,10 @@
 }
 
 .charNamePos{
-	font-size:25px;
+	height:60px;
 	width:230px;
-	left:10px;
+	left: calc(50% - 115px);
 	top:10px;
-	height:40px;
 }
 
 .pairUpIcon{

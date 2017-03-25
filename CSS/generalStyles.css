@@ -72,6 +72,32 @@ img{
 	border: 1px solid black;
 }
 
+.expBarBack{
+	position: absolute;
+	width: calc(100% - 2px);
+	height: 5px;
+	left: 2px;
+	top: 15px;
+	background-color: dimgray;
+}
+
+.expBarFront{
+	position: absolute;
+	height: 5px;
+	left: 2px;
+	top: 15px;
+	background-color: red;
+}
+
+.expBarBorder{
+	position: absolute;
+	width: calc(100% - 4px);
+	height: 4px;
+	left: 2px;
+	top: 15px;
+	border: 1px solid black;
+}
+
 .infoElement{
 	position: absolute;
 	border-radius: 10px;

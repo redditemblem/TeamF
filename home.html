@@ -18,7 +18,28 @@
 			<div class="healthBarBack"></div>
 			<div class="healthBarFront" ng-style="{width:((char.currHp/char.maxHp)*28)+'px'}"></div>
 			<div class="healthBarBorder"></div>
-			<div ng-if="isPaired(char.pairUpPartner)" class="pairUpIcon"><img src="IMG/shield_pairup.png"></div>
+			<!--<div ng-if="isPaired(char.pairUpPartner)" class="pairUpIcon"><img src="IMG/shield_pairup.png"></div>-->
+		</div>
+	</div>
+
+    <!--Character Info Box-->
+	<div id="{{cIndex}}_box" ng-repeat="(cIndex,char) in charaData" class="characterInfo floatAbove" draggable="true" ng-show="checkCharToggle(cIndex)">
+	<!--Drag bar-->
+		<div class="absolutePos dragBar olive"></div>
+		<!--Close button-->
+		<div class="infoElement dragBarButton hoverImage" title="Close" style="left:calc(100% - 18px)" ng-click="removeData(cIndex)">
+			<img src="IMG/close.png">
+		</div>
+		<!--Name, Class, Lvl-->
+		<div class="infoElement navy whiteText charNamePos" style="text-align: center; padding-top: 5px;">
+			<span style="font-size: 25px;">{{char.name}}</span><br/>
+			<span style="font-size: 15px;">Lvl. {{char.lvl}} {{char.class}}</span>
+		</div>
+		<div class="infoElement redText charExpPos">
+			EXP: {{char.exp}}
+			<div class="expBarBack"></div>
+			<div class="expBarFront" ng-style="{width: ((char.exp/100) * 226)+'px'}"></div>
+			<div class="expBarBorder"></div>
 		</div>
 	</div>
 </div>
