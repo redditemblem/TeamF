@@ -1,7 +1,5 @@
 <div id="dropArea" class="mapBox">
-	<div ng-repeat="map in maps">
-		<img id="map" class="absolutePos" ng-src="{{map}}">
-	</div>
+	<img id="map" class="absolutePos" ng-src="{{mapUrl}}">
 	
 	<!--Draw tile names-->
 	<div ng-repeat="(yIndex,row) in rows" class="absolutePos" ng-style="{top: determineGlowY(yIndex)}">

@@ -1,6 +1,6 @@
 app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', function ($scope, $location, $interval, DataService) {
 	var onLoad = checkData();
-	$scope.maps = ["IMG/testmap.png"];
+	$scope.mapUrl = "IMG/testmap.png";
 	$scope.rows = ["1"];
     $scope.columns = ["1"];
 	$scope.statsList = [
