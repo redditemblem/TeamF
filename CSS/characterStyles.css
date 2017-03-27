@@ -183,7 +183,7 @@
 .skillGemInfoPos{
 	overflow-y: hidden;
 	width:250px;
-	left:350px;
+	left:185px;
 	height:150px;
 }
 
@@ -277,7 +277,7 @@
 .itemInfoPos{
 	font-size:12px;
 	width:240px;
-	left:100px;
+	left:200px;
 	height:110px;
 }
 

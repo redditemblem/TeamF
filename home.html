@@ -3,7 +3,7 @@
 	
 	<!--Draw tile names-->
 	<div ng-repeat="(yIndex,row) in rows" class="absolutePos" ng-style="{top: determineGlowY(yIndex)}">
-		<div class="glowBox" ng-repeat="(indexX,column) in columns" title="{{column}}, {{row}}" ng-style="{left: determineGlowX(indexX)}"></div>
+		<div class="glowBox" ng-repeat="(indexX,column) in columns" title="{{column}},{{row}}" ng-style="{left: determineGlowX(indexX)}"></div>
 	</div>
 	
 	<!--Draw characters-->
@@ -92,5 +92,34 @@
 		<div ng-repeat="skill in char.skills" class="infoElement redText hoverTan paleTan hoverImage skillPos" ng-mouseover="skillHoverIn(cIndex, $index)" ng-mouseleave="skillHoverOut(cIndex, $index)" ng-style="{top: fetchSklVerticalPos($index)}">
 			<span class="indentedSkillName" ng-if="validSkill(skill.name)">{{skill.name}}</span>
 		</div>
+		<!--Inventory Desc-->
+		<div ng-repeat="weapon in char.inventory">
+			<div class="infoElement green whiteText itemInfoPos" ng-if="weaponHoverOn(cIndex, $index) && validWeapon(weapon.name)" ng-style="{top: fetchWpnDescVerticalPos($index)}">
+				<div class="popOutText itemNamePos boldText">{{formatWeaponName(weapon.name)}}</div>
+				<div class="popOutText itemRankPos">
+					<span ng-if="hasWeaponRank(weapon.rank)">{{weapon.rank}} -</span>
+					{{weapon.class}}
+				</div>
+				<div class="customDivider" style="top:22px"></div>
+				<div ng-if="notItem(weapon.type)">
+					<div class="popOutText itemMightPos">Might: {{weapon.might}}</div>
+					<div class="popOutText itemMightPos" style="left:80px">Hit: {{weapon.hit}}</div>
+					<div class="popOutText itemMightPos" style="right:0px">Crit: {{weapon.crit}}</div>
+					<div class="popOutText itemWeightPos">Avo: {{weapon.avo}}</div>
+					<div class="popOutText itemWeightPos" style="left:80px">Dodge: {{weapon.dodge}}</div>
+					<div class="popOutText itemWeightPos" style="right:0px">Range: {{weapon.range}}</div>
+					<div class="customDivider" style="top:58px"></div>
+				</div>
+				<div class="popOutText italicText" ng-style="{top: setDescriptionLoc(weapon.type)}">{{weapon.note}}</div>
+			</div>
+		</div>
+		<!--Skill Info Boxes-->
+		<div ng-repeat="skill in char.skills">
+			<div ng-if="skillHoverOn(cIndex, $index) && validSkill(skill.name)" class="infoElement green whiteText skillGemInfoPos" ng-style="{top: fetchSklDescVerticalPos($index)}">
+				<div class="boldText popOutText popOutHeader">{{skill.name}}</div>
+			<div class="popOutText popOutBody">{{skill.desc}}</div>
+			</div>
+		</div>
+
 	</div>
 </div>
