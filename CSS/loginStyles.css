@@ -55,12 +55,12 @@
  	border-radius: 10px;
  	border: 0px;
  	box-shadow: none;
- 	background-color: #003051;
+ 	background-color: #38573A ;
  	color: white;
 }
 
 .authButton:hover{
-	background-color: #0063a7;
+	background-color: #BAAC7D ;
 	cursor: pointer;
 }
 
