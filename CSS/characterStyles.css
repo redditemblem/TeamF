@@ -74,10 +74,18 @@
 	top:2px;
 }
 
+.indentedSkillName{
+	position: absolute;
+	left:10px;
+	top:8px;
+	font-size: 13px;
+}
+
 .indentedWeaponName{
 	position: absolute;
 	left:31px;
-	top:5px;
+	top:8px;
+	font-size: 13px;
 }
 
 .indentedWeaponIcon{
@@ -166,10 +174,10 @@
 	top:80px;
 }
 
-.skillGemPos{
-	width:16px;
-	left:603px;
-	height:16px;
+.skillPos{
+	width:173px;
+	left:445px;
+	height:30px;
 }
 
 .skillGemInfoPos{
@@ -256,13 +264,13 @@
 
 .weaponRankPos{
 	width:35px;
-	top:188px;
+	top:190px;
 	height:24px;
 }
 
 .itemsPos{
-	width:250px;
-	left:345px;
+	width:180px;
+	left:10px;
 	height:30px;
 }
 

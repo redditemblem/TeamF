@@ -22,9 +22,9 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     //Positioning constants
     const statVerticalPos = ["10px", "39px", "68px", "97px", "126px", "155px", "184px"];
     const weaponVerticalPos = ["10px", "45px", "80px", "115px", "150px"];
-    const weaponRankHorzPos = ["345px", "395px", "445px"];
+    const weaponRankHorzPos = ["15px", "85px", "155px"];
     const weaponDescVerticalPos = ["10px", "35px", "60px", "85px", "105px"];
-    const skillVerticalPos = ["7px", "30px", "53px", "76px", "99px", "122px", "144px", "167px", "189px"];
+    const skillVerticalPos = ["10px", "45px", "80px", "115px", "150px", "185px", "220px"];
     const skillDescVerticalPos = ["5px", "15px", "22px", "29px", "36px", "43px", "50px", "57px", "63px"];
     
     const eSkillHorzPos = ["3px", "24px", "45px", "66px", "87px", "108px", "129px", "150px", "171px"];
@@ -331,7 +331,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     };
     
     $scope.validSkill = function(skill){
-    	return skill != "-" && skill != "";
+    	return skill != "" && skill != "None";
     };
 
     //Returns the image for a character's skill, if they're at the minimum
@@ -358,10 +358,6 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     	if(shields == 10) return "IMG/blueshield.png";
     	else if(shields >= num) return "IMG/filledshield.png";
     	else return "IMG/emptyshield.png";
-    };
-    
-    $scope.validSkill = function(skill){
-    	return skill != "-";
     };
     
     //*************************\\
@@ -391,7 +387,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     };
     
     $scope.existsWeapon = function(weaponName){
-    	return weaponName != "" && weaponName != "N/A";
+    	return true; //weaponName != "" && weaponName != "None";
     };
     
     //Returns the weapon rank icon relevant to the passed weapon type
@@ -403,6 +399,8 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     //Calculates the percentage of weapon proficicency for a specific weapon,
     //then returns the width of the progress bar in pixels
     $scope.calcWeaponExp = function(exp){
+		return (.5 * (boxWidth-2));
+
     	var slash = exp.indexOf("/");
     	var progress = parseInt(exp.substring(0,slash));
     	var total = parseInt(exp.substring(slash+1,exp.length));

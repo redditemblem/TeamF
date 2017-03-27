@@ -12,7 +12,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 	//\\//\\//\\//\\//\\//
 	// DATA AJAX CALLS  //
 	//\\//\\//\\//\\//\\//
-	
+
     function fetchCharacterData() {
       gapi.client.sheets.spreadsheets.values.get({
         spreadsheetId: sheetId,
@@ -35,6 +35,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
         }).then(function(response) {
       	 var images = response.result.values[0];
       	 for(var i = 0; i < characterData.length; i++)
+		   if(characterData[i][0] != "")
       		 characterData[i][2] = processImageURL(images[i]);
       	 updateProgressBar();
       	 fetchEnemyData();
@@ -96,98 +97,99 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 		characters = {};
     	for(var i = 0; i < characterData.length; i++){
     		var c = characterData[i];
-    		var currObj = {
-   			 'name'   : c[0],
-   			 'player' : c[1],
-   			 'spriteUrl' : c[2],
-   			 'class'  : c[3],
-   			 'maxHp'  : c[4],
-   			 'currHp' : c[5],
-   			 'Str' : c[6],
-  			 'Mag' : c[7],
-  			 'Skl' : c[8],
-  			 'Spd' : c[9],
-  			 'Lck' : c[10],
-  			 'Def' : c[11],
-  			 'Res' : c[12],
-  			 'Con' : c[13],
-  			 'Mov' : c[14],
-  			 'lvl' : c[15],
-  			 'exp' : c[16],
-  			 'skills' : {},
-  			 'inventory' : {},
-  			 'wallet' : {
-  				 'Harts' : c[29],
-  				 'Chips' : c[30],
-  				 'Doles' : c[31],
-  				 'Vults' : c[32],
-  				 'Maars' : c[33],
-  				 'Buckskins' : c[34],
-  			 },
-  			 'statusEffect' : c[36],
-  			 'turnsLeft' : c[37],
-  			 'moved'     : c[38],
-  			 'position'  : c[39],
-   			 'weaponRanks' : {
-   				 'w1' : {
-   					'class' : c[45],
-   					'rank'  : c[41],
-   					'exp'   : c[46]
-   				 },
-   				 'w2' : {
-   					'class' : c[47],
-  					'rank'  : c[42],
-  					'exp'   : c[48]
-   				 },
-   				 'w3' : {
-   					'class' : c[49],
-  					'rank'  : c[43],
-  					'exp'   : c[50]
-   				 }
-   			 },
-  			 'baseHp'  : c[68],
-  			 'baseStr' : c[69],
-  			 'baseMag' : c[70],
-  			 'baseSkl' : c[71],
-  			 'baseSpd' : c[72],
-  			 'baseLck' : c[73],
-  			 'baseDef' : c[74],
-  			 'baseRes' : c[75],
-  			 'baseCon' : c[76],
-  			 'baseMov' : c[77]
-    		};
-    		
-    		//Match skills
-    		for(var j = 17; j < 23; j++){
-    			var skl = findSkill(c[j]);
-    			currObj.skills["skl_" + (j-16)] = {
-    					'name' : skl[0],
-    					'type' : skl[1],
-    					'desc' : skl[2]
-    			};
-    		}
-    		
-    		//Match inventory
-    		for(var k = 23; k < 28; k++){
-    			var inv = findItem(c[k]);
-    			currObj.inventory["itm_" + (k-22)] = {
-    					'name' : inv[0],
-    					'type' : inv[1],
-    					'rank' : inv[2],
-    					'uses' : inv[3],
-    					'might' : inv[4],
-    					'hit' : inv[5],
-    					'crit' : inv[6],
-    					'critMltpr' : inv[7],
-    					'range' : inv[8],
-    					'value' : inv[9],
-    					'desc' : inv[10] != undefined ? inv[10] : ""
-    			};
-    		}
+			if(c[0] != ""){ //if character has a name
+				var currObj = {
+					'name'   : c[0],
+					'player' : c[1],
+					'spriteUrl' : c[2],
+					'class'  : c[3],
+					'maxHp'  : c[4],
+					'currHp' : c[5],
+					'Str' : c[6],
+					'Mag' : c[7],
+					'Skl' : c[8],
+					'Spd' : c[9],
+					'Lck' : c[10],
+					'Def' : c[11],
+					'Res' : c[12],
+					'Con' : c[13],
+					'Mov' : c[14],
+					'lvl' : c[15],
+					'exp' : c[16],
+					'skills' : {},
+					'inventory' : {},
+					'wallet' : {
+						'Harts' : c[29],
+						'Chips' : c[30],
+						'Doles' : c[31],
+						'Vults' : c[32],
+						'Maars' : c[33],
+						'Buckskins' : c[34],
+					},
+					'statusEffect' : c[36],
+					'turnsLeft' : c[37],
+					'moved'     : c[38],
+					'position'  : c[39],
+					'weaponRanks' : {
+						'w1' : {
+						'class' : c[45],
+						'rank'  : c[41],
+						'exp'   : c[46]
+						},
+						'w2' : {
+						'class' : c[47],
+						'rank'  : c[42],
+						'exp'   : c[48]
+						},
+						'w3' : {
+						'class' : c[49],
+						'rank'  : c[43],
+						'exp'   : c[50]
+						}
+					},
+					'baseHp'  : c[68],
+					'baseStr' : c[69],
+					'baseMag' : c[70],
+					'baseSkl' : c[71],
+					'baseSpd' : c[72],
+					'baseLck' : c[73],
+					'baseDef' : c[74],
+					'baseRes' : c[75],
+					'baseCon' : c[76],
+					'baseMov' : c[77]
+				};
+				
+				//Match skills
+				for(var j = 17; j < 23; j++){
+					var skl = findSkill(c[j]);
+					currObj.skills["skl_" + (j-16)] = {
+							'name' : skl[0],
+							'type' : skl[1],
+							'desc' : skl[2]
+					};
+				}
+				
+				//Match inventory
+				for(var k = 23; k < 28; k++){
+					var inv = findItem(c[k]);
+					currObj.inventory["itm_" + (k-22)] = {
+							'name' : inv[0],
+							'type' : inv[1],
+							'rank' : inv[2],
+							'uses' : inv[3],
+							'might' : inv[4],
+							'hit' : inv[5],
+							'crit' : inv[6],
+							'critMltpr' : inv[7],
+							'range' : inv[8],
+							'value' : inv[9],
+							'desc' : inv[10] != undefined ? inv[10] : ""
+					};
+				}
 
-    		characters["char_" + i] = currObj;
-    	}
-    	
+				characters["char_" + i] = currObj;
+			}
+		}
     	updateProgressBar();
     };
     
@@ -279,7 +281,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
     
     function findItem(name){
     	if(name.length == 0)
-    		return ["None", "None", "-", "0", "0", "0", "0", "0", "0", "0", ""];
+    		return ["", "None", "-", "0", "0", "0", "0", "0", "0", "0", ""];
     	
     	for(var i = 0; i < itemIndex.length; i++){
     		if(itemIndex[i][0] == name)

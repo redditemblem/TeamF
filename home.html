@@ -1,5 +1,5 @@
 <div id="dropArea" class="mapBox">
-	<img id="map" class="absolutePos" ng-src="{{mapUrl}}">
+	<img id="map" class="absolutePos" src="{{mapUrl}}">
 	
 	<!--Draw tile names-->
 	<div ng-repeat="(yIndex,row) in rows" class="absolutePos" ng-style="{top: determineGlowY(yIndex)}">
@@ -73,6 +73,24 @@
 		<div ng-repeat="stat in statsList" class="infoElement darkTan tanText statBox" ng-style="{top: stat[2], left: stat[3]}">
 			<span class="indentedStatLabel">{{stat[0]}}</span>
 			<span class="indentedStat">{{char[stat[0]]}}</span>
-		</div>	
+		</div>
+		<!--Inventory-->
+		<div ng-repeat="item in char.inventory" ng-mouseenter="weaponHoverIn(cIndex, $index)" ng-mouseleave="weaponHoverOut(cIndex, $index)" class="infoElement redText hoverTan itemsPos" ng-class="$index == 0 ? 'lightTan' : 'paleTan'" ng-style="{top: fetchWeaponVerticalPos($index)}">
+			<span class="indentedWeaponIcon" ng-if="validWeapon(item.name)"><img ng-src="{{getWeaponClassIcon(item.class)}}"/></span>
+			<span class="indentedWeaponName" ng-if="validWeapon(item.name)">{{item.name}}</span>
+		</div>
+		<!--Weapon ranks-->
+		<div ng-repeat="w in char.weaponRanks" class="infoElement weaponRankPos" ng-style="{left: fetchWpnRankHorzPos($index)}">
+			<span ng-if="existsWeapon(w.class)" title="{{w.class}} Rank" style="position:relative">
+				<img ng-src="{{weaponIcon(w.class)}}" style="display:inline-block">
+				<div class="weaponRankBackground"></div>
+				<div class="weaponRankBar" ng-style="{width:calcWeaponExp(w.exp)+'px'}"></div>
+				<div class="weaponRankLtrPos redText">{{w.rank}}</div>
+			</span>
+		</div>
+		<!--Skills-->
+		<div ng-repeat="skill in char.skills" class="infoElement redText hoverTan paleTan hoverImage skillPos" ng-mouseover="skillHoverIn(cIndex, $index)" ng-mouseleave="skillHoverOut(cIndex, $index)" ng-style="{top: fetchSklVerticalPos($index)}">
+			<span class="indentedSkillName" ng-if="validSkill(skill.name)">{{skill.name}}</span>
+		</div>
 	</div>
 </div>
