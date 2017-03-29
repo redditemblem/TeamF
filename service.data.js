@@ -45,7 +45,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
     function fetchEnemyData(){
     	gapi.client.sheets.spreadsheets.values.get({
             spreadsheetId: sheetId,
-            majorDimension: "ROWS",
+            majorDimension: "COLUMNS",
             range: 'Enemy Stats!B:ZZ',
           }).then(function(response) {
         	 enemyData = response.result.values;
@@ -133,17 +133,17 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 					'weaponRanks' : {
 						'w1' : {
 						'class' : c[45],
-						'rank'  : c[41],
+						'rank'  : (c[41] != "-" ? c[41].charAt(0) : ""),
 						'exp'   : c[46]
 						},
 						'w2' : {
 						'class' : c[47],
-						'rank'  : c[42],
+						'rank'  : (c[42] != "-" ? c[42].charAt(0) : ""),
 						'exp'   : c[48]
 						},
 						'w3' : {
 						'class' : c[49],
-						'rank'  : c[43],
+						'rank'  : (c[43] != "-" ? c[43].charAt(0) : ""),
 						'exp'   : c[50]
 						}
 					},
@@ -191,65 +191,99 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 			}
 		}
     	updateProgressBar();
+		processEnemies();
     };
     
     function processEnemies(){
-		enemies = {};
     	for(var i = 0; i < enemyData.length; i++){
     		var e = enemyData[i];
-    		var currObj = {
-   			 'name'   : e[0],
-   			 'affliation' : e[1],
-   			 'spriteUrl' : e[2],
-   			 'class'  : e[3],
-   			 'maxHp'  : e[4],
-   			 'currHp' : e[5],
-   			 'Str' : e[6],
-  			 'Mag' : e[7],
-  			 'Skl' : e[8],
-  			 'Spd' : e[9],
-  			 'Lck' : e[10],
-  			 'Def' : e[11],
-  			 'Res' : e[12],
-  			 'Con' : e[13],
-  			 'Mov' : e[14],
-  			 'gold' : e[15],
-  			 'lvl' : e[16],
-  			 'exp' : e[17],
-  			 'skills' : {},
-  			 'inventory' : {},
-  			 'statusEffect' : e[30],
-  			 'turnsLeft' : e[31],
-  			 'position'  : e[33],
-   			 'weaponRanks' : {
-   				 'w1' : {
-   					'class' : c[39],
-   					'rank'  : c[35],
-   					'exp'   : c[40]
-   				 },
-   				 'w2' : {
-   					'class' : c[41],
-  					'rank'  : c[36],
-  					'exp'   : c[42]
-   				 },
-   				 'w3' : {
-   					'class' : c[43],
-  					'rank'  : c[37],
-  					'exp'   : c[44]
-   				 }
-   			 },
-  			 'baseHp'  : c[62],
-  			 'baseStr' : c[63],
-  			 'baseMag' : c[64],
-  			 'baseSkl' : c[65],
-  			 'baseSpd' : c[66],
-  			 'baseLck' : c[67],
-  			 'baseDef' : c[68],
-  			 'baseRes' : c[69],
-  			 'baseCon' : c[70],
-  			 'baseMov' : c[71]
-    		};
+			if(e[0] != ""){ //if character has a name
+				var currObj = {
+				'name'   : e[0],
+				'affliation' : e[1],
+				'spriteUrl' : 'https://fireemblemwiki.org/w/images/c/cc/Ma_3ds02_automaton_enemy.gif', //e[2],
+				'class'  : e[3],
+				'maxHp'  : e[4],
+				'currHp' : e[5],
+				'Str' : e[6],
+				'Mag' : e[7],
+				'Skl' : e[8],
+				'Spd' : e[9],
+				'Lck' : e[10],
+				'Def' : e[11],
+				'Res' : e[12],
+				'Con' : e[13],
+				'Mov' : e[14],
+				'gold' : e[15],
+				'lvl' : e[16],
+				'exp' : e[17],
+				'skills' : {},
+				'inventory' : {},
+				'statusEffect' : e[30],
+				'turnsLeft' : e[31],
+				'position'  : e[33],
+				'weaponRanks' : {
+					'w1' : {
+						'class' : e[39],
+						'rank'  : (e[35] != "-" ? e[35].charAt(0) : ""),
+						'exp'   : e[40]
+					},
+					'w2' : {
+						'class' : e[41],
+						'rank'  : (e[36] != "-" ? e[36].charAt(0) : ""),
+						'exp'   : e[42]
+					},
+					'w3' : {
+						'class' : e[43],
+						'rank'  : (e[37] != "-" ? e[37].charAt(0) : ""),
+						'exp'   : e[44]
+					}
+				},
+				'baseHp'  : e[62],
+				'baseStr' : e[63],
+				'baseMag' : e[64],
+				'baseSkl' : e[65],
+				'baseSpd' : e[66],
+				'baseLck' : e[67],
+				'baseDef' : e[68],
+				'baseRes' : e[69],
+				'baseCon' : e[70],
+				'baseMov' : e[71]
+				};
+
+				//Match skills
+				for(var j = 18; j < 24; j++){
+					var skl = findSkill(e[j]);
+					currObj.skills["skl_" + (j-17)] = {
+							'name' : skl[0],
+							'type' : skl[1],
+							'desc' : skl[2]
+					};
+				}
+				
+				//Match inventory
+				for(var k = 24; k < 29; k++){
+					var inv = findItem(e[k]);
+					currObj.inventory["itm_" + (k-23)] = {
+							'name' : inv[0],
+							'type' : inv[1],
+							'rank' : inv[2],
+							'uses' : inv[3],
+							'might' : inv[4],
+							'hit' : inv[5],
+							'crit' : inv[6],
+							'critMltpr' : inv[7],
+							'range' : inv[8],
+							'value' : inv[9],
+							'desc' : inv[10] != undefined ? inv[10] : ""
+					};
+				}
+
+				characters["enmy_" + i] = currObj;
+			}
     	}
+
+		updateProgressBar();
     };
     
     //\\//\\//\\//\\//\\//
@@ -258,7 +292,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
     
     function updateProgressBar(){
 		if(progress < 100){
-			progress = progress + 17;
+			progress = progress + 15; //7 calls
     		$rootScope.$broadcast('loading-bar-updated', progress);
 		}
     };
@@ -268,7 +302,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
     };
     
     function findSkill(name){
-    	if(name.length == 0)
+    	if(name == undefined || name.length == 0)
     		return ["None", "N/A", "-"];
     	
     	for(var i = 0; i < skillIndex.length; i++){
@@ -280,7 +314,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
     };
     
     function findItem(name){
-    	if(name.length == 0)
+    	if(name == undefined || name.length == 0)
     		return ["", "None", "-", "0", "0", "0", "0", "0", "0", "0", ""];
     	
     	for(var i = 0; i < itemIndex.length; i++){

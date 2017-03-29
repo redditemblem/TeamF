@@ -238,7 +238,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     //Relocate the information box relative to the clicked char
     function positionCharBox(char){
     	var sprite = document.getElementById(char);
-    	var box = document.getElementById(char+'_box');
+    	var box = document.getElementById(char + '_box');
     	
 		var x = sprite.style.left;
     	var y = sprite.style.top;
@@ -387,7 +387,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     };
     
     $scope.existsWeapon = function(weaponName){
-    	return true; //weaponName != "" && weaponName != "None";
+    	return weaponName != "" && weaponName != "None";
     };
     
     //Returns the weapon rank icon relevant to the passed weapon type
@@ -486,19 +486,11 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     function initializeListeners(){;
     	var test = document.getElementById('char_0_box');
     	if($scope.charaData != undefined && test != null){
-    		
+
     		var i = 0;
     		//Set event listeners to be activated when the div is dragged
     	    for(var char in $scope.charaData){
-    	    	var box = document.getElementById('char_' + i + '_box');
-    	    	box.addEventListener('dragstart',dragStart,false);
-    	    	i++;
-    	    }
-    	    i = 0;
-    	    
-    	    //Set event listeners to be activated when the div is dragged
-    	    for(var enemy in $scope.enemyData){
-    	    	var box = document.getElementById('enmy_' + i + '_box');
+    	    	var box = document.getElementById(char + '_box');
     	    	box.addEventListener('dragstart',dragStart,false);
     	    	i++;
     	    }

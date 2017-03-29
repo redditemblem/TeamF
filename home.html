@@ -7,8 +7,8 @@
 	</div>
 	
 	<!--Draw characters-->
-	<div ng-repeat="char in charaData">
-		<div id="char_{{$index}}" ng-if="validPosition(char.position)" ng-click="displayData('char_'+$index)" class="absolutePos charDiv hoverImage" title="{{char.position}}" ng-style="{top: determineCharY(char.position), left: determineCharX(char.position)}">
+	<div ng-repeat="(cIndex,char) in charaData">
+		<div id="{{cIndex}}" ng-if="validPosition(char.position)" ng-click="displayData(cIndex)" class="absolutePos charDiv hoverImage" title="{{char.position}}" ng-style="{top: determineCharY(char.position), left: determineCharX(char.position)}">
 			<!--Paired unit sprite-->
 			<!--<div ng-if="isPaired(char.pairUpPartner)" class="charDiv mapCharOffsetLeft">
 				<img ng-src="{{getPairUnitIcon(char.pairUpPartner, 0)}}" class="mapCharCentered dimImage">
