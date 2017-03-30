@@ -3,7 +3,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 	var progress = 0;
 	var characters = null;
 	var enemies = null;
-	var characterData, enemyData, itemIndex, skillIndex;
+	var characterData, enemyData, itemIndex, skillIndex, statusIndex;
 	
 	this.getCharacters = function(){ return characters; };
 	this.getEnemies = function(){ return enemies; };
@@ -89,6 +89,18 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
           }).then(function(response) {
         	 itemIndex = response.result.values;
         	 updateProgressBar();
+        	 fetchStatusData();
+          });
+    };
+
+	function fetchStatusData(){
+    	gapi.client.sheets.spreadsheets.values.get({
+            spreadsheetId: sheetId,
+            majorDimension: "ROWS",
+            range: 'Status Effects!A:D',
+          }).then(function(response) {
+        	 statusIndex = response.result.values;
+        	 updateProgressBar();
         	 processCharacters();
           });
     };
@@ -126,7 +138,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 						'Maars' : c[33],
 						'Buckskins' : c[34],
 					},
-					'statusEffect' : c[36],
+					'statusEffect' : getStatusEffect(c[36]),
 					'turnsLeft' : c[37],
 					'moved'     : c[38],
 					'position'  : c[39],
@@ -160,32 +172,12 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 				};
 				
 				//Match skills
-				for(var j = 17; j < 23; j++){
-					var skl = findSkill(c[j]);
-					currObj.skills["skl_" + (j-16)] = {
-							'name' : skl[0],
-							'type' : skl[1],
-							'desc' : skl[2]
-					};
-				}
-				
+				for(var j = 17; j < 23; j++)
+					currObj.skills["skl_" + (j-16)] = getSkill(c[j]);
+
 				//Match inventory
-				for(var k = 23; k < 28; k++){
-					var inv = findItem(c[k]);
-					currObj.inventory["itm_" + (k-22)] = {
-							'name' : inv[0],
-							'type' : inv[1],
-							'rank' : inv[2],
-							'uses' : inv[3],
-							'might' : inv[4],
-							'hit' : inv[5],
-							'crit' : inv[6],
-							'critMltpr' : inv[7],
-							'range' : inv[8],
-							'value' : inv[9],
-							'desc' : inv[10] != undefined ? inv[10] : ""
-					};
-				}
+				for(var k = 23; k < 28; k++)
+					currObj.inventory["itm_" + (k-22)] = getItem(c[k]);
 
 				characters["char_" + i] = currObj;
 			}
@@ -219,7 +211,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 				'exp' : e[17],
 				'skills' : {},
 				'inventory' : {},
-				'statusEffect' : e[30],
+				'statusEffect' : getStatusEffect(e[30]),
 				'turnsLeft' : e[31],
 				'position'  : e[33],
 				'weaponRanks' : {
@@ -252,32 +244,12 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 				};
 
 				//Match skills
-				for(var j = 18; j < 24; j++){
-					var skl = findSkill(e[j]);
-					currObj.skills["skl_" + (j-17)] = {
-							'name' : skl[0],
-							'type' : skl[1],
-							'desc' : skl[2]
-					};
-				}
+				for(var j = 18; j < 24; j++)
+					currObj.skills["skl_" + (j-17)] = getSkill(e[j]);
 				
 				//Match inventory
-				for(var k = 24; k < 29; k++){
-					var inv = findItem(e[k]);
-					currObj.inventory["itm_" + (k-23)] = {
-							'name' : inv[0],
-							'type' : inv[1],
-							'rank' : inv[2],
-							'uses' : inv[3],
-							'might' : inv[4],
-							'hit' : inv[5],
-							'crit' : inv[6],
-							'critMltpr' : inv[7],
-							'range' : inv[8],
-							'value' : inv[9],
-							'desc' : inv[10] != undefined ? inv[10] : ""
-					};
-				}
+				for(var k = 24; k < 29; k++)
+					currObj.inventory["itm_" + (k-23)] = getItem(e[k]);
 
 				characters["enmy_" + i] = currObj;
 			}
@@ -292,7 +264,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
     
     function updateProgressBar(){
 		if(progress < 100){
-			progress = progress + 15; //7 calls
+			progress = progress + 13; //8 calls
     		$rootScope.$broadcast('loading-bar-updated', progress);
 		}
     };
@@ -300,6 +272,46 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
     function processImageURL(str){
     	return str.substring(8, str.lastIndexOf(",")-1);
     };
+
+	function getItem(name){
+		var inv = findItem(name);
+		return {
+			'name' : inv[0],
+			'class' : inv[1],
+			'rank' : inv[2],
+			'uses' : inv[3],
+			'might' : inv[4],
+			'hit' : inv[5],
+			'crit' : inv[6],
+			'critMltpr' : inv[7],
+			'range' : inv[8],
+			'value' : inv[9],
+			'desc' : (inv[10] != undefined ? inv[10] : "")
+		};
+	};
+
+	function getSkill(name){
+		var skl = findSkill(name);
+		return {
+			'name' : skl[0],
+			'type' : skl[1],
+			'desc' : skl[2]
+		};
+	};
+
+	function getStatusEffect(name){
+		var s = findStatus(name);
+		return {
+			'name' : s[0],
+			'icon' : '',
+			'desc' : s[2],
+			'class' : (s[3] != undefined ? s[3] : '')
+		}
+	};
+
+	//\\//\\//\\//\\//\\//
+	// SEARCH FUNCTIONS //
+	//\\//\\//\\//\\//\\//
     
     function findSkill(name){
     	if(name == undefined || name.length == 0)
@@ -324,5 +336,17 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
     	
     	return [name, "Mystery", "E", "0", "0", "0", "0", "0", "0", "0", "This item could not be located. Is its name spelled correctly?"];
     };
+
+	function findStatus(name){
+		if(name == undefined || name.length == 0 || name == "None")
+			return ["None", "", "No status.", ""];
+		
+		var status = null;
+		for(var i = 0; i < statusIndex.length; i++)
+			if(statusIndex[i][0] == name)
+				return statusIndex[i];
+
+		return [name, "", "This status could not be found.", ""];
+	}
 
 }]);

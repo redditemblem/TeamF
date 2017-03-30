@@ -66,6 +66,7 @@
 	position: absolute;
 	left:60px;
 	top:1px;
+	font-size: 15px;
 }
 
 .largeIndentedStat{
@@ -294,4 +295,19 @@
 	height: 11px;
 	left: 1px;
 	bottom: 8px;
+}
+
+.statusBox{
+	position: absolute;
+	left:445px;
+	top: 230px;
+	height: 20px;
+	width: 173px;
+}
+
+.indentedStatus{
+	position: absolute;
+	left:80px;
+	top:1px;
+	font-size: 15px;
 }

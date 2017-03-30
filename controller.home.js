@@ -424,11 +424,11 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     
     //Returns true if the weapon at the index is not an item
     $scope.notItem = function(type){
-    	return type != "Item" && type != "Gold" && type != "Unknown";
+    	return type != "Staff" && type != "Consumable" && type != "Mystery";
     };
     
     $scope.setDescriptionLoc = function(type){
-    	if(type != "Item" && type != "Gold" && type != "Unknown") return "60px";
+    	if(type != "Staff" && type != "Consumable" && type != "Mystery") return "60px";
     	else return "25px";
     };
     
@@ -451,6 +451,10 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     $scope.pairUpHoverIn = function(char){ $scope[char + "pair"] = true; };
     $scope.pairUpHoverOut = function(char){ $scope[char + "pair"] = false; };
     $scope.pairUpHoverOn = function(char){ return $scope[char + "pair"] == true; };
+
+	$scope.statusHoverIn = function(char){ $scope[char + "status"] = true; };
+	$scope.statusHoverOut = function(char){ $scope[char + "status"] = false; };
+	$scope.statusHoverOn = function(char){ return $scope[char + "status"] == true; };
     
     //*************************\\
     // SUPPORT FOR DRAGABILITY \\
