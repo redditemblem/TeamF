@@ -1,6 +1,5 @@
 app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', function ($scope, $location, $interval, DataService) {
 	var onLoad = checkData();
-	$scope.mapUrl = "IMG/testmap.png";
 	$scope.rows = ["1"];
     $scope.columns = ["1"];
 	$scope.statsList = [
@@ -46,7 +45,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     		$location.path('/');
     	else{
     		$scope.charaData = DataService.getCharacters();
-    		$scope.enemyData = DataService.getEnemies();
+			$scope.mapUrl = DataService.getMap();
     	}
     };
     
@@ -399,13 +398,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     //Calculates the percentage of weapon proficicency for a specific weapon,
     //then returns the width of the progress bar in pixels
     $scope.calcWeaponExp = function(exp){
-		return (.5 * (boxWidth-2));
-
-    	var slash = exp.indexOf("/");
-    	var progress = parseInt(exp.substring(0,slash));
-    	var total = parseInt(exp.substring(slash+1,exp.length));
-    	
-    	return (progress/total) * 30; //30 is the max number of pixels
+		return ((exp/25) * (boxWidth-2));
     };
     
     //Checks if there is a value in the index
@@ -455,6 +448,10 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
 	$scope.statusHoverIn = function(char){ $scope[char + "status"] = true; };
 	$scope.statusHoverOut = function(char){ $scope[char + "status"] = false; };
 	$scope.statusHoverOn = function(char){ return $scope[char + "status"] == true; };
+
+	$scope.traitHoverIn = function(char){ $scope[char + "trait"] = true; };
+	$scope.traitHoverOut = function(char){ $scope[char + "trait"] = false; };
+	$scope.traitHoverOn = function(char){ return $scope[char + "trait"] == true; };
     
     //*************************\\
     // SUPPORT FOR DRAGABILITY \\

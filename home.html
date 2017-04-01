@@ -93,9 +93,14 @@
 			<span class="indentedSkillName" ng-if="validSkill(skill.name)">{{skill.name}}</span>
 		</div>
 		<!--Status Effect-->
-		<div class="infoElement darkTan tanText statusBox hoverBrown" ng-mouseover="statusHoverIn(cIndex)" ng-mouseleave="statusHoverOut(cIndex)">
+		<div class="infoElement darkTan tanText statusBox hoverBrown" ng-mouseover="statusHoverIn(cIndex)" ng-mouseleave="statusHoverOut(cIndex)" style="top: 230px;">
 			<span class="indentedStatLabel">Status</span>
 			<span class="indentedStatus">{{char.statusEffect.name}}</span>
+		</div>
+		<!--Trait-->
+		<div class="infoElement darkTan tanText statusBox hoverBrown" ng-mouseover="traitHoverIn(cIndex)" ng-mouseleave="traitHoverOut(cIndex)" style="top: 255px;">
+			<span class="indentedStatLabel">Trait</span>
+			<span class="indentedStatus">{{char.trait.name}}</span>
 		</div>
 
 		<!--Inventory Desc-->
@@ -125,9 +130,18 @@
 			</div>
 		</div>
 		<!--Status Info-->
-		<div ng-if="statusHoverOn(cIndex)" class="infoElement green whiteText skillGemInfoPos" style="top: 200px">
+		<div ng-if="statusHoverOn(cIndex) && char.statusEffect.name != 'None'" class="infoElement green whiteText statusInfoPos" style="top: 170px">
 			<div class="boldText popOutText popOutHeader">{{char.statusEffect.name}}</div>
 			<div class="popOutText popOutBody">{{char.statusEffect.desc}}</div>
+		</div>
+		<!--Trait Info-->
+		<div ng-if="traitHoverOn(cIndex)" class="infoElement green whiteText statusInfoPos" style="top: 190px">
+			<div class="boldText popOutText popOutHeader">{{char.trait.name}}</div>
+			<div class="popOutText popOutBody">
+				Pro: {{char.trait.pro}}
+				<br/><br/>
+				Con: {{char.trait.con}}
+			</div>
 		</div>
 
 	</div>

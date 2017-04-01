@@ -300,14 +300,20 @@
 .statusBox{
 	position: absolute;
 	left:445px;
-	top: 230px;
 	height: 20px;
 	width: 173px;
 }
 
 .indentedStatus{
 	position: absolute;
-	left:80px;
-	top:1px;
-	font-size: 15px;
+	left:70px;
+	top:4px;
+	font-size: 10px;
+}
+
+.statusInfoPos{
+	overflow-y: hidden;
+	width:250px;
+	left:185px;
+	height:125px;
 }

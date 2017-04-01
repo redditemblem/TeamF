@@ -3,15 +3,30 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 	var progress = 0;
 	var characters = null;
 	var enemies = null;
-	var characterData, enemyData, itemIndex, skillIndex, statusIndex;
+	var map, characterData, enemyData, itemIndex, skillIndex, statusIndex, traitIndex;
 	
 	this.getCharacters = function(){ return characters; };
-	this.getEnemies = function(){ return enemies; };
-	this.loadMapData = function(){ fetchCharacterData(); };
+	this.getMap = function(){ return map; };
+	
+	this.loadMapData = function(){ fetchMapUrl(); };
 	
 	//\\//\\//\\//\\//\\//
 	// DATA AJAX CALLS  //
 	//\\//\\//\\//\\//\\//
+
+	function fetchMapUrl() {
+      gapi.client.sheets.spreadsheets.values.get({
+        spreadsheetId: sheetId,
+        majorDimension: "COLUMNS",
+		valueRenderOption: "FORMULA",
+        range: 'Management!A2:A2',
+      }).then(function(response) {
+		 map = response.result.values[0][0];
+		 if(map != "") map = map.substring(8, map.length-2);
+    	 updateProgressBar();
+    	 fetchCharacterData();
+      });
+    };
 
     function fetchCharacterData() {
       gapi.client.sheets.spreadsheets.values.get({
@@ -101,9 +116,21 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
           }).then(function(response) {
         	 statusIndex = response.result.values;
         	 updateProgressBar();
-        	 processCharacters();
+        	 fetchTraitData();
           });
     };
+
+	function fetchTraitData(){
+		gapi.client.sheets.spreadsheets.values.get({
+            spreadsheetId: sheetId,
+            majorDimension: "ROWS",
+            range: 'Traits!A:C',
+          }).then(function(response) {
+        	 traitIndex = response.result.values;
+        	 updateProgressBar();
+        	 processCharacters();
+          });
+	};
     
     function processCharacters(){
 		characters = {};
@@ -130,45 +157,46 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 					'exp' : c[16],
 					'skills' : {},
 					'inventory' : {},
+					'trait' : getTrait(c[28]),
 					'wallet' : {
-						'Harts' : c[29],
-						'Chips' : c[30],
-						'Doles' : c[31],
-						'Vults' : c[32],
-						'Maars' : c[33],
-						'Buckskins' : c[34],
+						'Harts' : c[30],
+						'Chips' : c[31],
+						'Doles' : c[32],
+						'Vults' : c[33],
+						'Maars' : c[34],
+						'Buckskins' : c[35],
 					},
-					'statusEffect' : getStatusEffect(c[36]),
-					'turnsLeft' : c[37],
-					'moved'     : c[38],
-					'position'  : c[39],
+					'statusEffect' : getStatusEffect(c[37]),
+					'turnsLeft' : c[38],
+					'moved'     : c[39],
+					'position'  : c[40],
 					'weaponRanks' : {
 						'w1' : {
-						'class' : c[45],
-						'rank'  : (c[41] != "-" ? c[41].charAt(0) : ""),
-						'exp'   : c[46]
+						'class' : c[46],
+						'rank'  : (c[42] != "-" ? c[42].charAt(0) : ""),
+						'exp'   : c[47]
 						},
 						'w2' : {
-						'class' : c[47],
-						'rank'  : (c[42] != "-" ? c[42].charAt(0) : ""),
-						'exp'   : c[48]
+						'class' : c[48],
+						'rank'  : (c[43] != "-" ? c[43].charAt(0) : ""),
+						'exp'   : c[49]
 						},
 						'w3' : {
-						'class' : c[49],
-						'rank'  : (c[43] != "-" ? c[43].charAt(0) : ""),
-						'exp'   : c[50]
+						'class' : c[50],
+						'rank'  : (c[44] != "-" ? c[44].charAt(0) : ""),
+						'exp'   : c[51]
 						}
 					},
-					'baseHp'  : c[68],
-					'baseStr' : c[69],
-					'baseMag' : c[70],
-					'baseSkl' : c[71],
-					'baseSpd' : c[72],
-					'baseLck' : c[73],
-					'baseDef' : c[74],
-					'baseRes' : c[75],
-					'baseCon' : c[76],
-					'baseMov' : c[77]
+					'baseHp'  : c[69],
+					'baseStr' : c[70],
+					'baseMag' : c[71],
+					'baseSkl' : c[72],
+					'baseSpd' : c[73],
+					'baseLck' : c[74],
+					'baseDef' : c[75],
+					'baseRes' : c[76],
+					'baseCon' : c[77],
+					'baseMov' : c[78]
 				};
 				
 				//Match skills
@@ -211,36 +239,37 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 				'exp' : e[17],
 				'skills' : {},
 				'inventory' : {},
-				'statusEffect' : getStatusEffect(e[30]),
-				'turnsLeft' : e[31],
-				'position'  : e[33],
+				'trait' : getTrait(e[29]),
+				'statusEffect' : getStatusEffect(e[31]),
+				'turnsLeft' : e[32],
+				'position'  : e[34],
 				'weaponRanks' : {
 					'w1' : {
-						'class' : e[39],
-						'rank'  : (e[35] != "-" ? e[35].charAt(0) : ""),
-						'exp'   : e[40]
+						'class' : e[40],
+						'rank'  : (e[36] != "-" ? e[36].charAt(0) : ""),
+						'exp'   : e[41]
 					},
 					'w2' : {
-						'class' : e[41],
-						'rank'  : (e[36] != "-" ? e[36].charAt(0) : ""),
-						'exp'   : e[42]
+						'class' : e[42],
+						'rank'  : (e[37] != "-" ? e[37].charAt(0) : ""),
+						'exp'   : e[43]
 					},
 					'w3' : {
-						'class' : e[43],
-						'rank'  : (e[37] != "-" ? e[37].charAt(0) : ""),
-						'exp'   : e[44]
+						'class' : e[44],
+						'rank'  : (e[38] != "-" ? e[38].charAt(0) : ""),
+						'exp'   : e[45]
 					}
 				},
-				'baseHp'  : e[62],
-				'baseStr' : e[63],
-				'baseMag' : e[64],
-				'baseSkl' : e[65],
-				'baseSpd' : e[66],
-				'baseLck' : e[67],
-				'baseDef' : e[68],
-				'baseRes' : e[69],
-				'baseCon' : e[70],
-				'baseMov' : e[71]
+				'baseHp'  : e[63],
+				'baseStr' : e[64],
+				'baseMag' : e[65],
+				'baseSkl' : e[66],
+				'baseSpd' : e[67],
+				'baseLck' : e[68],
+				'baseDef' : e[69],
+				'baseRes' : e[70],
+				'baseCon' : e[71],
+				'baseMov' : e[72]
 				};
 
 				//Match skills
@@ -264,7 +293,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
     
     function updateProgressBar(){
 		if(progress < 100){
-			progress = progress + 13; //8 calls
+			progress = progress + 10; //10 calls
     		$rootScope.$broadcast('loading-bar-updated', progress);
 		}
     };
@@ -309,6 +338,15 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 		}
 	};
 
+	function getTrait(name){
+		var t = findTrait(name);
+		return {
+			'name' : t[0],
+			'pro' : t[1],
+			'con' : t[2]
+		}
+	};
+
 	//\\//\\//\\//\\//\\//
 	// SEARCH FUNCTIONS //
 	//\\//\\//\\//\\//\\//
@@ -348,5 +386,16 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 
 		return [name, "", "This status could not be found.", ""];
 	}
+
+	function findTrait(name){
+		if(name == undefined || name.length == 0 || name == "None")
+			return ["None", "No positive", "No negative"];
+
+		for(var i = 0; i < traitIndex.length; i++)
+			if(traitIndex[i][0] == name)
+				return traitIndex[i];
+
+		return [name, "This trait could not be found.", ""]
+	};
 
 }]);
