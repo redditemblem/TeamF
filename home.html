@@ -2,7 +2,7 @@
 	<img id="map" class="absolutePos" src="{{mapUrl}}">
 	
 	<!--Draw tile names-->
-	<div ng-repeat="(yIndex,row) in rows" class="absolutePos" ng-style="{top: determineGlowY(yIndex)}">
+	<div ng-repeat="(yIndex,row) in rows" class="absolutePos" style="left: 1px;" ng-style="{top: determineGlowY(yIndex)}">
 		<div class="glowBox" ng-repeat="(indexX,column) in columns" title="{{column}},{{row}}" ng-style="{left: determineGlowX(indexX)}"></div>
 	</div>
 	
@@ -10,15 +10,17 @@
 	<div ng-repeat="(cIndex,char) in charaData">
 		<div id="{{cIndex}}" ng-if="validPosition(char.position)" ng-click="displayData(cIndex)" class="absolutePos charDiv hoverImage" title="{{char.position}}" ng-style="{top: determineCharY(char.position), left: determineCharX(char.position)}">
 			<!--Paired unit sprite-->
-			<!--<div ng-if="isPaired(char.pairUpPartner)" class="charDiv mapCharOffsetLeft">
-				<img ng-src="{{getPairUnitIcon(char.pairUpPartner, 0)}}" class="mapCharCentered dimImage">
-			</div>-->
+			<div ng-if="isPaired(char.position)" class="charDiv mapCharOffsetLeft">
+				<img ng-src="{{getPairUnitIcon(char.position)}}" class="mapCharCentered dimImage">
+			</div>
 			<!--Unit sprite-->
-			<img ng-src="{{char.spriteUrl}}" class="mapCharCentered" style="height: 31px; width: 31px;">
+			<div class="charDiv" ng-class="isPaired(char.position) ? 'mapCharOffsetRight' : 'mapCharOffsetNone'">
+				<img ng-src="{{char.spriteUrl}}" class="mapCharCentered" style="width: 30px; height: 30px;">
+			</div>
 			<div class="healthBarBack"></div>
 			<div class="healthBarFront" ng-style="{width:((char.currHp/char.maxHp)*27)+'px'}"></div>
 			<div class="healthBarBorder"></div>
-			<!--<div ng-if="isPaired(char.pairUpPartner)" class="pairUpIcon"><img src="IMG/shield_pairup.png"></div>-->
+			<div ng-if="isPaired(char.position)" class="pairUpIcon"><img src="IMG/shield_pairup.png"></div>
 		</div>
 	</div>
 
@@ -29,6 +31,10 @@
 		<!--Close button-->
 		<div class="infoElement dragBarButton hoverImage" title="Close" style="left:calc(100% - 18px)" ng-click="removeData(cIndex)">
 			<img src="IMG/close.png">
+		</div>
+		<!--Pair-Up button-->
+		<div class="infoElement dragBarButton hoverImage" title="Switch to Paired Unit" style="left:calc(100% - 38px)" ng-if="isPaired(char.position)" ng-click="findPairUpChar(cIndex)">
+			<img src="IMG/switchpairup.png">
 		</div>
 		<!--Name, Class, Lvl-->
 		<div class="infoElement navy whiteText charNamePos" style="text-align: center; padding-top: 5px;">

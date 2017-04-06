@@ -45,7 +45,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     		$location.path('/');
     	else{
     		$scope.charaData = DataService.getCharacters();
-			$scope.mapUrl = DataService.getMap();
+			$scope.mapUrl = 'https://i.imgur.com/5TaQZvj.png'; //DataService.getMap();
     	}
     };
     
@@ -54,7 +54,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     // GLOW BOXES              \\
     //*************************\\
     
-	const boxWidth = 31;
+	const boxWidth = 30;
 	const gridWidth = 1;
 
     /* Using the height of the map image, calculates the number of tiles tall
@@ -104,12 +104,12 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     
     //Returns the vertical position of a glowBox element
     $scope.determineGlowY = function(index){
-    	return (index*(boxWidth+gridWidth)) + "px";
+    	return (index * (boxWidth + gridWidth) + gridWidth) + "px";
     };
     
     //Returns the horizontal position of a glowBox element
     $scope.determineGlowX = function(index){
-    	return (index*(boxWidth+gridWidth)) + "px";
+    	return (index * (boxWidth + gridWidth)) + "px";
     };
     
     //*************************\\
@@ -136,25 +136,25 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     	return $scope[index + "_displayBox"] == true;
     };
     
-    $scope.isPaired = function(pairUpPartner){
-    	return pairUpPartner != "None";
+    $scope.isPaired = function(pos){
+    	return pos != undefined && pos.indexOf("(") > -1;
     };
     
     //Returns the image URL for the unit in the back of a pairup
     //0 = charaData, 1 = enemyData
-    $scope.getPairUnitIcon = function(pair, toggle){
-    	var pairedUnit = locatePairedUnit(pair, toggle).unit;
+    $scope.getPairUnitIcon = function(pair){
+		var pairName = pair.substring(pair.indexOf("(")+1, pair.indexOf(")"));
+    	var pairedUnit = locatePairedUnit(pairName).unit;
     	return pairedUnit.spriteUrl;
     };
     
     //Switches char info box to show the stats of the paired unit
     //Triggered when char info box "Switch to Paired Unit" button is clicked
-    $scope.findPairUpChar = function(char, toggle){
-    	var clickedChar;
-    	if(toggle == "0") clickedChar = $scope.charaData[char];
-    	else clickedChar = $scope.enemyData[char];
-    	
-    	var pairedUnit = locatePairedUnit(clickedChar.pairUpPartner, toggle);
+    $scope.findPairUpChar = function(char){
+    	var clickedChar = $scope.charaData[char];
+		var pairedUnitName = clickedChar.position.substring(clickedChar.position.indexOf("(")+1, clickedChar.position.indexOf(")"));
+    	var pairedUnit = locatePairedUnit(pairedUnitName);
+		pairedUnit.paired = true;
     	
     	//Toggle visibility
     	$scope[char + "_displayBox"] = false;
@@ -168,30 +168,20 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     	pairBox.style.left = currBox.offsetLeft + 'px';
     };
     
-    function locatePairedUnit(unitName, toggle){
-    	var dataList, dataName;
-    	
-    	if(toggle == "0"){
-    		dataList = $scope.charaData;
-    		dataName = "char_";
-    	}else{
-    		dataList = $scope.enemyData;
-    		dataName = "enmy_";
-    	}
-    	
-    	var size = Object.keys(dataList).length;
-    	var found = false;
-    	var inc = 0;
-    	
+    function locatePairedUnit(unitName){
+		var pairedUnit = {};
+    	var charPos = "";
+
     	//Find paired unit
-    	while(!found && inc < size){
-    		if(dataList[dataName + inc].name == unitName){
-    			pairedUnit = dataList[dataName + inc];
-    			found = true;
-    		}else inc++;
+    	for(var char in $scope.charaData){
+    		if($scope.charaData[char].name == unitName){
+				pairedUnit = $scope.charaData[char];
+				charPos = char;
+				break;
+			}		
     	}
     	
-    	return {'unit' : dataList[dataName + inc], 'unitLoc' : dataName + inc };
+    	return { 'unit': pairedUnit, 'unitLoc' : charPos };
     };
     
     //Parses an enemy's name to see if it contains a number at the end.
@@ -206,7 +196,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     };
     
     $scope.validPosition = function(pos){
-    	return pos != "";
+    	return pos.indexOf(",") != -1;
     };
     
     //Using a character's coordinates, calculates their horizontal
@@ -224,7 +214,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     $scope.determineCharY = function(pos){
 		if(pos == "Not Deployed")
 			return "0px";
-    	pos = pos.substring(pos.indexOf(",")+1, pos.length); //grab first char
+		pos = pos.substring(pos.indexOf(",")+1, pos.indexOf("(") != -1 ? pos.indexOf("(") : pos.length); //grab first char
 		pos = pos.trim();
     	pos = parseInt(pos);
     	return ((pos-1)*(boxWidth+gridWidth)) + "px";

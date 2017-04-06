@@ -18,13 +18,12 @@ img{
 	left:0px;
 	height:100%;
 	width:100%;
-	background-image: url("../IMG/background.png");
-    background-repeat: repeat;
+	background-color: black;
 }
 
 .charDiv{
-	height:31px;
-	width:31px;
+	height:30px;
+	width:30px;
 }
 
 .hoverImage:hover{
@@ -129,8 +128,8 @@ img{
 
 .glowBox{
 	position:absolute;
-	height:31px;
-	width:31px;
+	height:30px;
+	width:30px;
 	display:inline-block;
 }
 
