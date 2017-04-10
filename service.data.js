@@ -3,11 +3,13 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 	var progress = 0;
 	var characters = null;
 	var enemies = null;
-	var map, characterData, enemyData, itemIndex, skillIndex, statusIndex, traitIndex;
+	var map, characterData, enemyData, itemIndex, skillIndex, statusIndex, traitIndex, supportIndex, supportBonuses;
 	
 	this.getCharacters = function(){ return characters; };
 	this.getMap = function(){ return map; };
-	
+	this.getSupportIndex = function(){ return supportIndex; };
+	this.getSupportBonuses = function(){ return supportBonuses; };
+
 	this.loadMapData = function(){ fetchMapUrl(); };
 	
 	//\\//\\//\\//\\//\\//
@@ -49,7 +51,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
           range: 'Player Stats!B3:ZZ3',
         }).then(function(response) {
       	 var images = response.result.values[0];
-      	 for(var i = 0; i < characterData.length; i++)
+      	 for(var i = 0; i < images.length; i++)
 		   if(characterData[i][0] != "")
       		 characterData[i][2] = processImageURL(images[i]);
       	 updateProgressBar();
@@ -76,10 +78,10 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
           valueRenderOption: "FORMULA",
           range: 'Enemy Stats!B3:ZZ3',
         }).then(function(response) {
-      	 //var images = response.result.values[0];
-      	 //for(var i = 0; i < enemyData.length; i++)
-      		//enemyData[i][2] = processImageURL(images[i]);
-      	 //updateProgressBar();
+      	 var images = response.result.values[0];
+      	 for(var i = 0; i < images.length; i++)
+      		enemyData[i][2] = processImageURL(images[i]);
+      	 updateProgressBar();
       	 fetchSkillData();
         });
       };
@@ -128,10 +130,60 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
           }).then(function(response) {
         	 traitIndex = response.result.values;
         	 updateProgressBar();
-        	 processCharacters();
+        	 fetchSupportRanks();
+          });
+	};
+
+	function fetchSupportRanks(){
+		gapi.client.sheets.spreadsheets.values.get({
+            spreadsheetId: sheetId,
+            majorDimension: "ROWS",
+            range: 'Support Data!A:P',
+          }).then(function(response) {
+        	 var data = response.result.values;
+			 var colHeader = data[0];
+			 data.splice(0,1);
+			 supportIndex = {};
+
+			 //Process support matrix
+			 for(var row in data){
+				 var temp = {};
+				 for(var i = 1; i < data[row].length; i++){
+					temp[colHeader[i]] = data[row][i];
+				 }
+				 supportIndex[data[row][0]] = temp;
+			 }
+
+        	 updateProgressBar();
+        	 fetchSupportBonuses();
           });
 	};
     
+	function fetchSupportBonuses(){
+		gapi.client.sheets.spreadsheets.values.get({
+            spreadsheetId: sheetId,
+            majorDimension: "ROWS",
+            range: 'Support Bonuses!A:L',
+          }).then(function(response) {
+        	 var data = response.result.values;
+			 var colHeader = data[0];
+			 data.splice(0,1);
+			 supportBonuses = {};
+
+			 //Process support matrix
+			 for(var row in data){
+				 var temp = {};
+				 for(var i = 1; i < data[row].length; i++){
+					temp[colHeader[i]] = data[row][i];
+				 }
+				 supportBonuses[data[row][0]] = temp;
+			 }
+
+        	 updateProgressBar();
+        	 processCharacters();
+          });
+	};
+
     function processCharacters(){
 		characters = {};
     	for(var i = 0; i < characterData.length; i++){
@@ -220,8 +272,8 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 			if(e[0] != ""){ //if character has a name
 				var currObj = {
 				'name'   : e[0],
-				'affliation' : e[1],
-				'spriteUrl' : 'https://fireemblemwiki.org/w/images/c/cc/Ma_3ds02_automaton_enemy.gif', //e[2],
+				'affiliation' : e[1],
+				'spriteUrl' : e[2],
 				'class'  : e[3],
 				'maxHp'  : e[4],
 				'currHp' : e[5],
@@ -293,7 +345,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
     
     function updateProgressBar(){
 		if(progress < 100){
-			progress = progress + 10; //10 calls
+			progress = progress + 7.7; //13 calls
     		$rootScope.$broadcast('loading-bar-updated', progress);
 		}
     };

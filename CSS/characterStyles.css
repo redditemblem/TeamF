@@ -269,6 +269,13 @@
 	height:24px;
 }
 
+.pairBoxPos{
+	top: 225px;
+	left: 10px;
+	height: 85px;
+	width: 180px;
+}
+
 .itemsPos{
 	width:180px;
 	left:10px;

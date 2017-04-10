@@ -2,8 +2,10 @@
 	<img id="map" class="absolutePos" src="{{mapUrl}}">
 	
 	<!--Draw tile names-->
-	<div ng-repeat="(yIndex,row) in rows" class="absolutePos" style="left: 1px;" ng-style="{top: determineGlowY(yIndex)}">
-		<div class="glowBox" ng-repeat="(indexX,column) in columns" title="{{column}},{{row}}" ng-style="{left: determineGlowX(indexX)}"></div>
+	<div style="margin-top: 2px;">
+		<div ng-repeat="(yIndex,row) in rows" class="absolutePos" ng-style="{top: determineGlowY(yIndex)}">
+			<div class="glowBox" ng-repeat="(indexX,column) in columns" title="{{column}},{{row}}" ng-style="{left: determineGlowX(indexX)}"></div>
+		</div>
 	</div>
 	
 	<!--Draw characters-->
@@ -15,7 +17,7 @@
 			</div>
 			<!--Unit sprite-->
 			<div class="charDiv" ng-class="isPaired(char.position) ? 'mapCharOffsetRight' : 'mapCharOffsetNone'">
-				<img ng-src="{{char.spriteUrl}}" class="mapCharCentered" style="width: 30px; height: 30px;">
+				<img ng-src="{{char.spriteUrl}}" class="mapCharCentered">
 			</div>
 			<div class="healthBarBack"></div>
 			<div class="healthBarFront" ng-style="{width:((char.currHp/char.maxHp)*27)+'px'}"></div>
@@ -37,7 +39,7 @@
 			<img src="IMG/switchpairup.png">
 		</div>
 		<!--Name, Class, Lvl-->
-		<div class="infoElement navy whiteText charNamePos" style="text-align: center; padding-top: 5px;">
+		<div class="infoElement whiteText charNamePos" ng-style="{'background-color': determineNametagColor(cIndex)}" style="text-align: center; padding-top: 5px;">
 			<span style="font-size: 25px;">{{char.name}}</span><br/>
 			<span style="font-size: 15px;">Lvl. {{char.lvl}} {{char.class}}</span>
 		</div>
@@ -93,6 +95,14 @@
 				<div class="weaponRankBar" ng-style="{width:calcWeaponExp(w.exp)+'px'}"></div>
 				<div class="weaponRankLtrPos redText">{{w.rank}}</div>
 			</span>
+		</div>
+		<!--Pairup Info-->
+		<div class="infoElement darkTan tanText pairBoxPos">
+			<div class="boldText popOutText popOutHeader">Partner: {{getPairName(char.position)}}</div>
+			<div ng-if="isPaired(char.position)" class="popOutText popOutBody">
+				Support Rank: {{getPairSupportRank(char.name, char.position)}}<br/>
+				{{buildPairSupportBonuses(char.position)}}
+			</div>
 		</div>
 		<!--Skills-->
 		<div ng-repeat="skill in char.skills" class="infoElement redText hoverTan paleTan hoverImage skillPos" ng-mouseover="skillHoverIn(cIndex, $index)" ng-mouseleave="skillHoverOut(cIndex, $index)" ng-style="{top: fetchSklVerticalPos($index)}">

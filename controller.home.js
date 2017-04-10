@@ -34,6 +34,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     const eWpnDescVerticalPos = ["5px", "20px", "40px", "55px", "65px"];
     
     //Constants
+	const DEFAULT_NAMETAG_COLOR = "#332F40";
     const STAT_DEFAULT_COLOR = "#E5C68D";
     const STAT_BUFF_COLOR = "#42adf4";
     const STAT_DEBUFF_COLOR = "#960000";
@@ -45,7 +46,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     		$location.path('/');
     	else{
     		$scope.charaData = DataService.getCharacters();
-			$scope.mapUrl = 'https://i.imgur.com/5TaQZvj.png'; //DataService.getMap();
+			$scope.mapUrl = DataService.getMap();
     	}
     };
     
@@ -104,12 +105,12 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     
     //Returns the vertical position of a glowBox element
     $scope.determineGlowY = function(index){
-    	return (index * (boxWidth + gridWidth) + gridWidth) + "px";
+    	return (index * (boxWidth + (gridWidth * 2)) + 1) + "px";
     };
     
     //Returns the horizontal position of a glowBox element
     $scope.determineGlowX = function(index){
-    	return (index * (boxWidth + gridWidth)) + "px";
+    	return (index * (boxWidth + (gridWidth * 2)) + 1) + "px";
     };
     
     //*************************\\
@@ -206,7 +207,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
 			return "0px";
     	pos = pos.substring(0,pos.indexOf(",")); //grab first number
     	pos = parseInt(pos);
-    	return ((pos-1)*(boxWidth+gridWidth)) + "px";
+    	return ((pos - 1) * (boxWidth + (gridWidth * 2)) + 1) + "px";
     };
     
     //Using a character's coordinates, calculates their vertical
@@ -217,7 +218,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
 		pos = pos.substring(pos.indexOf(",")+1, pos.indexOf("(") != -1 ? pos.indexOf("(") : pos.length); //grab first char
 		pos = pos.trim();
     	pos = parseInt(pos);
-    	return ((pos-1)*(boxWidth+gridWidth)) + "px";
+    	return ((pos - 1) * (boxWidth + (gridWidth * 2)) + 1) + "px";
     };
 
     //***********************\\
@@ -348,6 +349,39 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     	else if(shields >= num) return "IMG/filledshield.png";
     	else return "IMG/emptyshield.png";
     };
+
+	$scope.getPairName = function(pos){
+		if(pos.indexOf("(") == -1) return "None";
+		else return pos.substring(pos.indexOf("(")+1, pos.indexOf(")"));
+	};
+
+	$scope.getPairSupportRank = function(name, pos){
+		var supportRanks = DataService.getSupportIndex();
+		var partner = pos.substring(pos.indexOf("(")+1, pos.indexOf(")"));
+		var rank = supportRanks[name][partner];
+		if(rank != "-") return rank;
+		else return "None";
+	};
+
+	$scope.buildPairSupportBonuses = function(pos){
+		var data = DataService.getSupportBonuses();
+		var partner = pos.substring(pos.indexOf("(")+1, pos.indexOf(")"));
+		var bonuses = data[partner];
+		var returnStr = "";
+
+		for(var stat in bonuses){
+			var value = parseInt(bonuses[stat]);
+			if(value > 0){
+				returnStr += stat + ": +" + bonuses[stat] + ", ";
+			}else if(value < 0){
+				returnStr += stat + ": " + bonuses[stat] + ", ";
+			}	
+		}	
+		
+		if(returnStr.length > 2)
+			returnStr = returnStr.substring(0, returnStr.length-2);
+		return returnStr;
+	};
     
     //*************************\\
     // FUNCTIONS FOR INVENTORY \\
@@ -414,6 +448,13 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     	if(type != "Staff" && type != "Consumable" && type != "Mystery") return "60px";
     	else return "25px";
     };
+
+	$scope.determineNametagColor = function(char){
+		if(char.indexOf("char_") != -1) return DEFAULT_NAMETAG_COLOR;
+		
+		if($scope.charaData[char].affiliation == "") return DEFAULT_NAMETAG_COLOR;
+		else return $scope.charaData[char].affiliation;
+	};
     
     //***************************\\
     // MOUSEOVER/MOUSEOUT EVENTS \\

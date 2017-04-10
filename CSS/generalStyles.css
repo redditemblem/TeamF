@@ -22,8 +22,8 @@ img{
 }
 
 .charDiv{
-	height:30px;
-	width:30px;
+	height:31px;
+	width:31px;
 }
 
 .hoverImage:hover{
@@ -128,8 +128,8 @@ img{
 
 .glowBox{
 	position:absolute;
-	height:30px;
-	width:30px;
+	height:31px;
+	width:31px;
 	display:inline-block;
 }
 
