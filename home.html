@@ -27,7 +27,7 @@
 	</div>
 
     <!--Character Info Box-->
-	<div id="{{cIndex}}_box" ng-repeat="(cIndex,char) in charaData" class="characterInfo floatAbove" draggable="true" ng-show="checkCharToggle(cIndex)">
+	<div id="{{cIndex}}_box" ng-repeat="(cIndex,char) in charaData" class="characterInfo yellowTan floatAbove" draggable="true" ng-show="checkCharToggle(cIndex)">
 	<!--Drag bar-->
 		<div class="absolutePos dragBar olive"></div>
 		<!--Close button-->
@@ -109,13 +109,13 @@
 			<span class="indentedSkillName" ng-if="validSkill(skill.name)">{{skill.name}}</span>
 		</div>
 		<!--Status Effect-->
-		<div class="infoElement darkTan tanText statusBox hoverBrown" ng-mouseover="statusHoverIn(cIndex)" ng-mouseleave="statusHoverOut(cIndex)" style="top: 230px;">
-			<span class="indentedStatLabel">Status</span>
+		<div class="infoElement darkTan tanText statusBox hoverBrown" ng-mouseover="statusHoverIn(cIndex)" ng-mouseleave="statusHoverOut(cIndex)" style="top: 225px;">
+			<span class="indentedStatusLabel">Status</span>
 			<span class="indentedStatus">{{char.statusEffect.name}}</span>
 		</div>
 		<!--Trait-->
-		<div class="infoElement darkTan tanText statusBox hoverBrown" ng-mouseover="traitHoverIn(cIndex)" ng-mouseleave="traitHoverOut(cIndex)" style="top: 255px;">
-			<span class="indentedStatLabel">Trait</span>
+		<div class="infoElement darkTan tanText statusBox hoverBrown" ng-mouseover="traitHoverIn(cIndex)" ng-mouseleave="traitHoverOut(cIndex)" style="top: 270px;">
+			<span class="indentedStatusLabel">Trait</span>
 			<span class="indentedStatus">{{char.trait.name}}</span>
 		</div>
 

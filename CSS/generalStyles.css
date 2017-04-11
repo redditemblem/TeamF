@@ -36,7 +36,7 @@ img{
 }
 
 .hoverBrown:hover{
-	background-color: #965b1f !important;
+	background-color: #5f605f !important;
 	cursor: pointer !important;
 }
 
@@ -211,16 +211,17 @@ img{
 .centerText{ text-align: center; }
 .rightText{ text-align: right; }
 .whiteText{ color: white; }
-.redText{ color: #491107; }
-.tanText{ color: #E5C68D; }
+.redText{ color: #13300e; }
+.tanText{ color: #eaeaea; }
 .boldText{ font-weight: bold; }
 .italicText{ font-style: italic; }
 
-.navy{ background-color: #332F40; }
-.paleTan{ background-color: #E5C68D; }
-.lightTan{ background-color: #e5d0aa; }
-.darkTan{ background-color: #BA7228; }
-.olive{ background-color: #490200; }
+.navy{ background-color: #727472; }
+.paleTan{ background-color: #cecece; }
+.lightTan{ background-color: #e0e0e0; }
+.yellowTan{ background-color: #c0c0c0 ; }
+.darkTan{ background-color: #727472; }
+.olive{ background-color: #212121; }
 .lightGreen{ background-color: #39af2b; }
-.green{ background-color: #216619; opacity: 0.95;}
+.green{ background-color: #5b0808; opacity: 0.95;}
 .blackBorder{ border: 1px solid black; }

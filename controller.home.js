@@ -34,7 +34,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     const eWpnDescVerticalPos = ["5px", "20px", "40px", "55px", "65px"];
     
     //Constants
-	const DEFAULT_NAMETAG_COLOR = "#332F40";
+	const DEFAULT_NAMETAG_COLOR = "#4a5d23";
     const STAT_DEFAULT_COLOR = "#E5C68D";
     const STAT_BUFF_COLOR = "#42adf4";
     const STAT_DEBUFF_COLOR = "#960000";
@@ -436,7 +436,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     };
     
     $scope.hasWeaponRank = function(rank){
-    	return rank != "";
+    	return rank != "-";
     };
     
     //Returns true if the weapon at the index is not an item

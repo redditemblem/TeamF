@@ -1,5 +1,4 @@
 .characterInfo{
-	background-color: #DAAC5E;
 	height:320px;
 	width:631px;
 	left:0px;
@@ -46,7 +45,7 @@
 	height: 3px;
 	left: 0px;
 	bottom: -3px;
-	background-color:#944F24;
+	background-color:#727472;
 }
 
 .statBox{
@@ -307,15 +306,23 @@
 .statusBox{
 	position: absolute;
 	left:445px;
-	height: 20px;
+	height: 40px;
 	width: 173px;
 }
 
 .indentedStatus{
 	position: absolute;
+	top: 8px;
 	left:70px;
-	top:4px;
 	font-size: 10px;
+	height:20px;
+}
+
+.indentedStatusLabel{
+	position: absolute;
+	font-size:12px;
+	left:20px;
+	top:14px;
 }
 
 .statusInfoPos{
