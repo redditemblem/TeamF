@@ -1,5 +1,6 @@
 app.controller('AuthCtrl', ['$scope', '$location', '$interval', 'DataService', function ($scope, $location, $interval, DataService) {
     var id = fetch();
+	var sheetId = '19OIsTc_rxylCoqq2JOIFwx3avsl-lQeqd4VD_NzrmBU';
     $scope.ready = false;
     var checkGapi = $interval(checkAuth, 250);
     $scope.loadingIcon = pickLoadingIcon();
@@ -7,8 +8,10 @@ app.controller('AuthCtrl', ['$scope', '$location', '$interval', 'DataService', f
     
     //Set div visibility
     var authorizeDiv = document.getElementById('authorize-div');
+	var unavailableDiv = document.getElementById('unavailable-div');
     var loadingDiv = document.getElementById('loading-div');
     var bar = document.getElementById('progress');
+	unavailableDiv.style.display = 'none';
     loadingDiv.style.display = 'none';
     bar.style.value = '0px';
     
@@ -26,11 +29,28 @@ app.controller('AuthCtrl', ['$scope', '$location', '$interval', 'DataService', f
     		'apiKey': id, 
     		'discoveryDocs': ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
     	}).then(function(){
-    		authorizeDiv.style.display = 'none';
-    		loadingDiv.style.display = 'inline';
-    		DataService.loadMapData();
+			testWebAppAvailability();
+    		
     	});
     };
+
+	function testWebAppAvailability(){
+	  gapi.client.sheets.spreadsheets.values.get({
+        spreadsheetId: sheetId,
+        majorDimension: "COLUMNS",
+        range: 'Management!A1:A1',
+      }).then(function(response) {
+		 var toggle = response.result.values[0][0];
+		 if(toggle == "Off"){
+			authorizeDiv.style.display = 'none';
+			unavailableDiv.style.display = 'inline';
+		 }else{
+			authorizeDiv.style.display = 'none';
+    		loadingDiv.style.display = 'inline';
+    		DataService.loadMapData();
+		 }
+      });
+	};
     
     function pickLoadingIcon(){
     	var rand = Math.floor((Math.random() * 14) + 1); //generate a number between 1 and 14
