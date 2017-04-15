@@ -18,6 +18,7 @@
 			<!--Unit sprite-->
 			<div class="charDiv" ng-class="isPaired(char.position) ? 'mapCharOffsetRight' : 'mapCharOffsetNone'">
 				<img ng-src="{{char.spriteUrl}}" class="mapCharCentered">
+				<div class="enemyNum">{{getEnemyNum(char.name)}}</div>
 			</div>
 			<div class="healthBarBack"></div>
 			<div class="healthBarFront" ng-style="{width:((char.currHp/char.maxHp)*27)+'px'}"></div>
@@ -84,7 +85,7 @@
 		</div>
 		<!--Inventory-->
 		<div ng-repeat="item in char.inventory" ng-mouseenter="weaponHoverIn(cIndex, $index)" ng-mouseleave="weaponHoverOut(cIndex, $index)" class="infoElement redText hoverTan itemsPos" ng-class="$index == 0 ? 'lightTan' : 'paleTan'" ng-style="{top: fetchWeaponVerticalPos($index)}">
-			<span class="indentedWeaponIcon" ng-if="validWeapon(item.name)"><img ng-src="{{getWeaponClassIcon(item.class)}}"/></span>
+			<span class="indentedWeaponIcon" ng-if="validWeapon(item.name)"><img ng-src="{{getWeaponClassIcon(item.class)}}" onError="this.onerror=null;this.src='IMG/type_mystery.png';" /></span>
 			<span class="indentedWeaponName" ng-if="validWeapon(item.name)">{{item.name}}</span>
 		</div>
 		<!--Weapon ranks-->
