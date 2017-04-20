@@ -357,7 +357,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 	function getItem(name){
 		var inv = findItem(name);
 		return {
-			'name' : inv[0],
+			'name' : name,
 			'class' : inv[1],
 			'rank' : inv[2],
 			'uses' : inv[3],
@@ -419,6 +419,11 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
     	if(name == undefined || name.length == 0)
     		return ["", "None", "-", "0", "0", "0", "0", "0", "0", "0", ""];
     	
+		if(itemName.indexOf("(") != -1){ 
+			itemName = itemName.substring(0, itemName.indexOf("(")); 
+			itemName = itemName.trim(); 
+		}
+
     	for(var i = 0; i < itemIndex.length; i++){
     		if(itemIndex[i][0] == name)
     			return itemIndex[i];
