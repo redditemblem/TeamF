@@ -419,9 +419,9 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
     	if(name == undefined || name.length == 0)
     		return ["", "None", "-", "0", "0", "0", "0", "0", "0", "0", ""];
     	
-		if(itemName.indexOf("(") != -1){ 
-			itemName = itemName.substring(0, itemName.indexOf("(")); 
-			itemName = itemName.trim(); 
+		if(name.indexOf("(") != -1){ 
+			name = name.substring(0, name.indexOf("(")); 
+			name = name.trim(); 
 		}
 
     	for(var i = 0; i < itemIndex.length; i++){
