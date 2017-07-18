@@ -1,5 +1,4 @@
 app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', function ($scope, $location, $interval, DataService) {
-	var onLoad = checkData();
 	$scope.rows = ["1"];
     $scope.columns = ["1"];
 	$scope.statsList = [
@@ -14,8 +13,6 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
 	               ];
 	
 	//Interval timers
-    var rowTimer = $interval(calcNumRows, 250, 20); //attempt to get rows 20 times at 250 ms intervals (total run: 5 sec)
-    var colTimer = $interval(calcNumColumns, 250, 20);
     var dragNDrop = $interval(initializeListeners, 250, 20);
     
     //Positioning constants
@@ -41,14 +38,16 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     
     //Reroutes the user if they haven't logged into the app
     //Loads data from the DataService if they have
-    function checkData(){
-    	if(DataService.getCharacters() == null)
-    		$location.path('/');
-    	else{
-    		$scope.charaData = DataService.getCharacters();
-			$scope.mapUrl = DataService.getMap();
-    	}
-    };
+	if(DataService.getCharacters() == null)
+		$location.path('/');
+	else{
+		$scope.charaData = DataService.getCharacters();
+		$scope.mapUrl = DataService.getMap();
+		$scope.rows = DataService.getRows();
+		$scope.columns = DataService.getColumns();
+		$scope.terrainTypes = DataService.getTerrainTypes();
+		$scope.terrainLocs = DataService.getTerrainMappings();
+	}
     
     //*************************\\
     // FUNCTIONS FOR MAP TILE  \\
@@ -57,51 +56,6 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     
 	const boxWidth = 30;
 	const gridWidth = 1;
-
-    /* Using the height of the map image, calculates the number of tiles tall
-     * the map is and returns a subsection of the rowNames array of that size.
-     * Called every 250 ms for the first 5 seconds the app is open.
-     */
-    function calcNumRows(){
-    	var map = document.getElementById('map');
-    	if(map != null){
-    		var height = map.naturalHeight; //calculate the height of the map
-        	
-        	height -= boxWidth;
-        	height = height / (boxWidth + gridWidth);
-        	var temp = [];
-			for(var i = 0; i < height; i++)
-				temp.push(i+1);
-        	
-        	if(temp.length != 0){
-        		$interval.cancel(rowTimer); //cancel $interval timer
-        		$scope.rows = temp;
-        	}
-    	}
-    };
-    
-   /* Using the width of the map image, calculates the number of tiles wide
-    * the map is and returns an array of that size.
-    * Called every 250 ms for the first 5 seconds the app is open.
-    */
-   function calcNumColumns(){
-    	var map = document.getElementById('map');
-    	if(map != null){
-    		var width = map.naturalWidth; //calculate the height of the map
-        	
-        	width -= boxWidth;
-        	width = width / (boxWidth + gridWidth);
-        	var temp = [];
-        	
-        	for(var i = 0; i < width; i++)
-        		temp.push(i+1);
-        	
-        	if(temp.length != 0){
-        		$interval.cancel(colTimer); //cancel $interval timer
-        		$scope.columns = temp;
-        	}
-    	}
-    };
     
     //Returns the vertical position of a glowBox element
     $scope.determineGlowY = function(index){
@@ -111,7 +65,16 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     //Returns the horizontal position of a glowBox element
     $scope.determineGlowX = function(index){
     	return (index * (boxWidth + (gridWidth * 2)) + 1) + "px";
-    };
+	};
+	
+	$scope.determineGlowColor = function(loc){
+		if($scope.terrainLocs == undefined) return '';
+		var terrainInfo = $scope.terrainLocs[loc];
+		if(terrainInfo.movCount > 0) return 'blue';
+		if(terrainInfo.atkCount > 0) return 'red';
+		if(terrainInfo.healCount > 0) return 'green';
+		return '';
+	};
     
     //*************************\\
     // FUNCTIONS FOR MAP       \\
@@ -123,19 +86,36 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     	var bool = $scope[char + "_displayBox"];
     	if(bool == undefined || bool == false){
     		positionCharBox(char);
+			toggleCharRange(char, 1);
     		$scope[char + "_displayBox"] = true;
     	}else{
+			toggleCharRange(char, -1);
     		$scope[char + "_displayBox"] = false;
     	}
     };
-    
-    $scope.removeData = function(index){
-    	$scope[index + "_displayBox"] = false;
+
+    $scope.removeData = function(char){
+		toggleCharRange(char, -1);
+    	$scope[char + "_displayBox"] = false;
     };
     
-    $scope.checkCharToggle = function(index){
-    	return $scope[index + "_displayBox"] == true;
+    $scope.checkCharToggle = function(char){
+    	return $scope[char + "_displayBox"] == true;
     };
+
+	//Add/remove character's range highlighted cells
+	function toggleCharRange(char, val){
+		var movRangeList = $scope.charaData[char].range;
+		var atkRangeList = $scope.charaData[char].atkRange;
+		var healRangeList = $scope.charaData[char].healRange;
+
+		for(var i = 0; i < movRangeList.length; i++)
+			$scope.terrainLocs[movRangeList[i]].movCount += val;
+		for(var j = 0; j < atkRangeList.length; j++)
+			$scope.terrainLocs[atkRangeList[j]].atkCount += val;
+		for(var k = 0; k < healRangeList.length; k++)
+			$scope.terrainLocs[healRangeList[k]].healCount += val;
+	};
     
     $scope.isPaired = function(pos){
     	return pos != undefined && pos.indexOf("(") > -1;
@@ -151,22 +131,22 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     
     //Switches char info box to show the stats of the paired unit
     //Triggered when char info box "Switch to Paired Unit" button is clicked
-    $scope.findPairUpChar = function(char){
+     $scope.findPairUpChar = function(char){
     	var clickedChar = $scope.charaData[char];
-		var pairedUnitName = clickedChar.position.substring(clickedChar.position.indexOf("(")+1, clickedChar.position.indexOf(")"));
-    	var pairedUnit = locatePairedUnit(pairedUnitName);
-		pairedUnit.paired = true;
+    	var pairedUnit = locatePairedUnit(clickedChar.pairUpPartner);
     	
     	//Toggle visibility
     	$scope[char + "_displayBox"] = false;
     	$scope[pairedUnit.unitLoc + "_displayBox"] = true;
-    	
-		//var currEnemy = document.getElementById(char);
+
     	var currBox = document.getElementById(char + '_box');
     	var pairBox = document.getElementById(pairedUnit.unitLoc + '_box');
     
 		pairBox.style.top = currBox.offsetTop + 'px';
-    	pairBox.style.left = currBox.offsetLeft + 'px';
+		pairBox.style.left = currBox.offsetLeft + 'px';
+		
+		toggleCharRange(char, -1); //remove original char's data
+		toggleCharRange(pairedUnit.unitLoc, 1); //display new char's data
     };
     
     function locatePairedUnit(unitName){

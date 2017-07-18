@@ -84,12 +84,17 @@ app.controller('AuthCtrl', ['$scope', '$location', '$interval', 'DataService', f
     function redirect(){
     	$location.path('/map').replace();
     	$scope.$apply();
-    };
+	};
+	
+	var img = document.getElementById("mapImg");
+	img.onload = function(){
+		DataService.calculateRanges();
+	};
 
-    $scope.$on('loading-bar-updated', function(event, data) {
-    	bar.value = data;
-		if(data >= 100){
-			redirect();
-		}	
+	$scope.$on('loading-bar-updated', function(event, data, map) {
+		bar.value = data;
+		
+		if(map != undefined && img.src == "") img.src = map;
+		if(data >= 100) redirect();
     });
 }]);

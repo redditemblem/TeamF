@@ -1,11 +1,13 @@
 <div class="backgroundBox"></div>
 <div id="dropArea" class="mapBox">
 	<img id="map" class="absolutePos" src="{{mapUrl}}">
-	
+
 	<!--Draw tile names-->
-	<div style="margin-top: 2px;">
-		<div ng-repeat="(yIndex,row) in rows" class="absolutePos" ng-style="{top: determineGlowY(yIndex)}">
-			<div class="glowBox" ng-repeat="(indexX,column) in columns" title="{{column}},{{row}}" ng-style="{left: determineGlowX(indexX)}"></div>
+	<div ng-repeat="(yIndex,row) in rows" class="glowBoxIndent absolutePos" ng-style="{top: determineGlowY(yIndex)}">
+		<div class="glowBox"
+			 ng-repeat="(indexX,column) in columns"
+			 title="({{column}},{{row}}) {{terrainLocs[column+','+row].type}}: {{terrainTypes[terrainLocs[column+','+row].type].avo}}🚶  {{terrainTypes[terrainLocs[column+','+row].type].def}}⛨"
+			 ng-style="{left: determineGlowX(indexX), 'background-color': determineGlowColor(column+','+row)}">
 		</div>
 	</div>
 	
