@@ -203,61 +203,60 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 					'Lck' : c[10],
 					'Def' : c[11],
 					'Res' : c[12],
-					'Con' : c[13],
-					'Mov' : c[14],
-					'lvl' : c[15],
-					'exp' : c[16],
+					'Mov' : c[13],
+					'lvl' : c[14],
+					'exp' : c[15],
 					'skills' : {},
 					'inventory' : {},
-					'trait' : getTrait(c[28]),
+					'trait' : getTrait(c[27]),
 					'wallet' : {
-						'Harts' : c[30],
-						'Chips' : c[31],
-						'Doles' : c[32],
-						'Vults' : c[33],
-						'Maars' : c[34],
-						'Buckskins' : c[35],
+						'Harts' : c[29],
+						'Chips' : c[30],
+						'Doles' : c[31],
+						'Vults' : c[32],
+						'Maars' : c[33],
+						'Buckskins' : c[34],
 					},
-					'statusEffect' : getStatusEffect(c[37]),
-					'turnsLeft' : c[38],
-					'moved'     : c[39],
-					'position'  : c[40],
+					'statusEffect' : getStatusEffect(c[36]),
+					'turnsLeft' : c[37],
+					'moved'     : c[38],
+					'position'  : c[39],
 					'weaponRanks' : {
 						'w1' : {
-						'class' : c[46],
-						'rank'  : (c[42] != "-" ? c[42].charAt(0) : ""),
-						'exp'   : c[47]
+						'class' : c[45],
+						'rank'  : (c[41] != "-" ? c[41].charAt(0) : ""),
+						'exp'   : c[46]
 						},
 						'w2' : {
-						'class' : c[48],
-						'rank'  : (c[43] != "-" ? c[43].charAt(0) : ""),
-						'exp'   : c[49]
+						'class' : c[47],
+						'rank'  : (c[42] != "-" ? c[42].charAt(0) : ""),
+						'exp'   : c[48]
 						},
 						'w3' : {
-						'class' : c[50],
-						'rank'  : (c[44] != "-" ? c[44].charAt(0) : ""),
-						'exp'   : c[51]
+						'class' : c[49],
+						'rank'  : (c[43] != "-" ? c[43].charAt(0) : ""),
+						'exp'   : c[50]
 						}
 					},
-					'baseHp'  : c[69],
-					'baseStr' : c[70],
-					'baseMag' : c[71],
-					'baseSkl' : c[72],
-					'baseSpd' : c[73],
-					'baseLck' : c[74],
-					'baseDef' : c[75],
-					'baseRes' : c[76],
-					'baseCon' : c[77],
-					'baseMov' : c[78]
+					'baseHp'  : c[68],
+					'baseStr' : c[69],
+					'baseMag' : c[70],
+					'baseSkl' : c[71],
+					'baseSpd' : c[72],
+					'baseLck' : c[73],
+					'baseDef' : c[74],
+					'baseRes' : c[75],
+					'baseCon' : c[76],
+					'baseMov' : c[77]
 				};
 				
 				//Match skills
-				for(var j = 17; j < 23; j++)
-					currObj.skills["skl_" + (j-16)] = getSkill(c[j]);
+				for(var j = 16; j < 22; j++)
+					currObj.skills["skl_" + (j-15)] = getSkill(c[j]);
 
 				//Match inventory
-				for(var k = 23; k < 28; k++)
-					currObj.inventory["itm_" + (k-22)] = getItem(c[k]);
+				for(var k = 22; k < 27; k++)
+					currObj.inventory["itm_" + (k-21)] = getItem(c[k]);
 
 				characters["char_" + i] = currObj;
 			}
