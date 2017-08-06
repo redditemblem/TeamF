@@ -139,6 +139,7 @@ img{
 	height:31px;
 	width:31px;
 	display:inline-block;
+	opacity: 0.5;
 }
 
 .glowBox:hover{

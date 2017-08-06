@@ -1,11 +1,12 @@
 app.service('DataService', ['$rootScope', function ($rootScope) {
 	var sheetId = '19OIsTc_rxylCoqq2JOIFwx3avsl-lQeqd4VD_NzrmBU';
 	var progress = 0;
+	const loadAmount = (100 / 17) + 0.1;
 	var characters = null;
 	var enemies = null;
 	var rows = [];
 	var cols = [];
-	var map, characterData, enemyData, itemIndex, skillIndex, statusIndex, traitIndex, supportIndex, supportBonuses, coordMapping, terrainIndex, terrainLocs;
+	var map, characterData, enemyData, itemIndex, skillIndex, statusIndex, traitIndex, supportIndex, supportBonuses, classIndex, coordMapping, terrainIndex, terrainLocs;
 	
 	this.getCharacters = function(){ return characters; };
 	this.getMap = function(){ return map; };
@@ -173,6 +174,19 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 			 }
 
         	 updateProgressBar();
+        	 fetchClassIndex();
+		});
+	};
+
+	function fetchClassIndex(){
+		gapi.client.sheets.spreadsheets.values.get({
+            spreadsheetId: sheetId,
+            majorDimension: "ROWS",
+            range: 'Class Stats!A2:AG',
+          }).then(function(response) {
+        	 classIndex = response.result.values;
+
+        	 updateProgressBar();
         	 fetchTerrainIndex();
 		});
 	};
@@ -186,7 +200,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 			var rw = response.result.values;
 			terrainIndex = {};
 
-			for(var i = 1; i < rw.length; i++){
+			for(var i = 0; i < rw.length; i++){
 				var r = rw[i];
 				terrainIndex[r[0]] = {
 					'avo' : r[1] != "-" ? parseInt(r[1]) : 0,
@@ -228,7 +242,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 					'name'   : c[0],
 					'player' : c[1],
 					'spriteUrl' : c[2],
-					'class'  : c[3],
+					'class'  : getClass(c[3]),
 					'maxHp'  : c[4],
 					'currHp' : c[5],
 					'Str' : c[6],
@@ -309,7 +323,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 				'name'   : e[0],
 				'affiliation' : e[1],
 				'spriteUrl' : e[2],
-				'class'  : e[3],
+				'class'  : getClass(e[3]),
 				'maxHp'  : e[4],
 				'currHp' : e[5],
 				'Str' : e[6],
@@ -398,15 +412,16 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 
 	function getMapDimensions(){
     	var map = document.getElementById('mapImg');
+		
 		var height = map.naturalHeight; //calculate the height of the map
-        	
 		height -= (boxWidth * 2);
 		height = height / (boxWidth + gridWidth);
+
 		for(var i = 0; i < height; i++)
 			rows.push(i+1);
 			
 		var width = map.naturalWidth; //calculate the width of the map
-		width -= (boxWidth * 3);
+		width -= (boxWidth * 2);
 		width = width / (boxWidth + gridWidth);
 		
 		for(var i = 0; i < width; i++)
@@ -454,9 +469,9 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 			var healList = [];
 			
 			if(char.position.length > 0){
-				var horz = parseInt(char.position.substring(0, char.position.indexOf(",")));
-				var vert = parseInt(char.position.substring(char.position.indexOf(",")+1, char.position.length));
-				var range = parseInt(char.mov);
+				var horz = parseInt(char.position.substring(0, char.position.indexOf(","))) - 1;
+				var vert = parseInt(char.position.substring(char.position.indexOf(",")+1, char.position.length)) - 1;
+				var range = parseInt(char.Mov);
 
 				var maxAtkRange = 0;
 				var maxHealRange = 0;
@@ -487,7 +502,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 	};
 
 	function recurseRange(mode, horzPos, vertPos, range, atkRange, healRange, terrainType, affiliation, list, atkList, healList, trace){
-		var coord = rows[horzPos] + cols[vertPos];
+		var coord = rows[horzPos] + "," + cols[vertPos];
 		var tile = terrainLocs[coord];
 
 		//Mov mode calcs
@@ -497,7 +512,8 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 			//Unit cannot traverse tile if it has no cost or it is occupied by an enemy unit
             if(   classCost == undefined
                || classCost == "-"
-               || (tile.occupiedAffiliation.length > 0 && tile.occupiedAffiliation != affiliation)
+			   || (tile.occupiedAffiliation.length > 0 && tile.occupiedAffiliation != affiliation)
+			   || (parseFloat(classCost) > range)
 			){
 				if(atkRange > 0){ range = atkRange; mode = 1; }
 				else if(healRange > 0){ range = healRange; mode = 2; }
@@ -529,24 +545,24 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 			else return;
 		} 
 
-		if(horzPos > 0 && trace.indexOf("_"+rows[horzPos-1]+cols[vertPos]+"_") == -1 &&
-			(mode == 0 || (list.indexOf("_"+rows[horzPos-1] + cols[vertPos]+"_") == -1 && 
-				(mode == 1 || atkList.indexOf("_"+rows[horzPos-1] + cols[vertPos]+"_") == -1))))
+		if(horzPos > 0 && trace.indexOf("_"+rows[horzPos-1]+","+cols[vertPos]+"_") == -1 &&
+			(mode == 0 || (list.indexOf("_"+rows[horzPos-1]+","+cols[vertPos]+"_") == -1 && 
+				(mode == 1 || atkList.indexOf("_"+rows[horzPos-1]+","+cols[vertPos]+"_") == -1))))
 			recurseRange(mode, horzPos-1, vertPos, range, atkRange, healRange, terrainType, affiliation, list, atkList, healList, trace);
 
-		if(horzPos < rows.length - 1 && trace.indexOf("_"+rows[horzPos+1] + cols[vertPos]+"_") == -1 &&
-			(mode == 0 || (list.indexOf("_"+rows[horzPos+1] + cols[vertPos]+"_") == -1 && 
-				(mode == 1 || atkList.indexOf("_"+rows[horzPos+1] + cols[vertPos]+"_") == -1))))
+		if(horzPos < rows.length - 1 && trace.indexOf("_"+rows[horzPos+1]+","+cols[vertPos]+"_") == -1 &&
+			(mode == 0 || (list.indexOf("_"+rows[horzPos+1]+","+cols[vertPos]+"_") == -1 && 
+				(mode == 1 || atkList.indexOf("_"+rows[horzPos+1]+","+cols[vertPos]+"_") == -1))))
 			recurseRange(mode, horzPos+1, vertPos, range, atkRange, healRange, terrainType, affiliation, list, atkList, healList, trace);
 
-		if(vertPos > 0 && trace.indexOf("_"+rows[horzPos] + cols[vertPos-1]+"_") == -1 &&
-			(mode == 0 || (list.indexOf("_"+rows[horzPos] + cols[vertPos-1]+"_") == -1 && 
-				(mode == 1 || atkList.indexOf("_"+rows[horzPos] + cols[vertPos-1]+"_") == -1))))
+		if(vertPos > 0 && trace.indexOf("_"+rows[horzPos]+","+cols[vertPos-1]+"_") == -1 &&
+			(mode == 0 || (list.indexOf("_"+rows[horzPos]+","+cols[vertPos-1]+"_") == -1 && 
+				(mode == 1 || atkList.indexOf("_"+rows[horzPos]+","+cols[vertPos-1]+"_") == -1))))
 			recurseRange(mode, horzPos, vertPos-1, range, atkRange, healRange, terrainType, affiliation, list, atkList, healList, trace);
 
-		if(vertPos < cols.length - 1 && trace.indexOf("_"+rows[horzPos] + cols[vertPos+1]+"_") == -1 &&
-			(mode == 0 || (list.indexOf("_"+rows[horzPos] + cols[vertPos+1]+"_") == -1 && 
-				(mode == 1 || atkList.indexOf("_"+rows[horzPos] + cols[vertPos+1]+"_") == -1))))
+		if(vertPos < cols.length - 1 && trace.indexOf("_"+rows[horzPos]+","+cols[vertPos+1]+"_") == -1 &&
+			(mode == 0 || (list.indexOf("_"+rows[horzPos]+","+cols[vertPos+1]+"_") == -1 && 
+				(mode == 1 || atkList.indexOf("_"+rows[horzPos]+","+cols[vertPos+1]+"_") == -1))))
 			recurseRange(mode, horzPos, vertPos+1, range, atkRange, healRange, terrainType, affiliation, list, atkList, healList, trace);
 	};
 
@@ -567,7 +583,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
     
     function updateProgressBar(){
 		if(progress < 100){
-			progress = progress + 5.9; //13 calls
+			progress += loadAmount;
     		$rootScope.$broadcast('loading-bar-updated', progress, map);
 		}
     };
@@ -618,6 +634,14 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 			'name' : t[0],
 			'pro' : t[1],
 			'con' : t[2]
+		}
+	};
+
+	function getClass(name){
+		var c = findClass(name);
+		return {
+			'name' : c[0],
+			'movType' : c[1]
 		}
 	};
 
@@ -674,7 +698,18 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 			if(traitIndex[i][0] == name)
 				return traitIndex[i];
 
-		return [name, "This trait could not be found.", ""]
+		return [name, "This trait could not be found.", ""];
+	};
+
+	function findClass(name){
+		if(name == undefined || name.length == 0 || name == "None")
+			return [name == undefined ? "" : name, ""];
+
+		for(var i = 0; i < classIndex.length; i++)
+			if(classIndex[i][0] == name)
+				return [classIndex[i][0], classIndex[i][32]];
+
+		return [name, "",];
 	};
 
 }]);

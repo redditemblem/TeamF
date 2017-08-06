@@ -13,7 +13,13 @@
 	
 	<!--Draw characters-->
 	<div ng-repeat="(cIndex,char) in charaData">
-		<div id="{{cIndex}}" ng-if="validPosition(char.position)" ng-click="displayData(cIndex)" class="absolutePos charDiv hoverImage" title="{{char.position}}" ng-style="{top: determineCharY(char.position), left: determineCharX(char.position)}">
+		<div id="{{cIndex}}"
+			 ng-if="validPosition(char.position)"
+			 ng-click="displayData(cIndex)"
+			 class="absolutePos charDiv hoverImage"
+			 title="({{char.position}}) {{terrainLocs[char.position].type}}: {{terrainTypes[terrainLocs[char.position].type].avo}}🚶  {{terrainTypes[terrainLocs[char.position].type].def}}⛨"
+			 ng-style="{top: determineCharY(char.position), left: determineCharX(char.position)}"
+		>
 			<!--Paired unit sprite-->
 			<div ng-if="isPaired(char.position)" class="charDiv mapCharOffsetLeft">
 				<img ng-src="{{getPairUnitIcon(char.position)}}" class="mapCharCentered dimImage">
@@ -45,7 +51,7 @@
 		<!--Name, Class, Lvl-->
 		<div class="infoElement whiteText charNamePos" ng-style="{'background-color': determineNametagColor(cIndex)}" style="text-align: center; padding-top: 5px;">
 			<span style="font-size: 25px;">{{char.name}}</span><br/>
-			<span style="font-size: 15px;">Lvl. {{char.lvl}} {{char.class}}</span>
+			<span style="font-size: 15px;">Lvl. {{char.lvl}} {{char.class.name}}</span>
 		</div>
 		<!--Experience bar-->
 		<div class="infoElement redText charExpPos">
