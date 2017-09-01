@@ -137,7 +137,12 @@
 					<div class="popOutText itemWeightPos" style="right:0px">Range: {{weapon.range}}</div>
 					<div class="customDivider" style="top:58px"></div>
 				</div>
-				<div class="popOutText italicText" ng-style="{top: setDescriptionLoc(weapon.class)}">{{weapon.desc}}</div>
+				<div class="popOutText" ng-class="{'scroll-up' : textTooLong(weapon.effect, weapon.desc)}" ng-style="{top: setDescriptionLoc(weapon.class), height: setItemDescHeight(weapon.class)}">
+					<p>
+						<span class="italicText">{{weapon.effect}}</span>
+						<span ng-if="weapon.desc.length > 0"><br /></span>
+						<span>{{weapon.desc}}</span>
+					</p>
 			</div>
 		</div>
 		<!--Skill Info Boxes-->
