@@ -455,7 +455,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     };
 	
 	$scope.setItemDescHeight = function(type){
-		if(type != "Mystery") return "80px";
+		if(type != "Mystery") return "50px";
     	else return "80px";
 	};
 
