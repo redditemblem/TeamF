@@ -456,7 +456,7 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
 	
 	$scope.setItemDescHeight = function(type){
 		if(type != "Mystery") return "80px";
-    	else return "118px";
+    	else return "80px";
 	};
 
 	$scope.determineNametagColor = function(char){
