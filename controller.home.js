@@ -450,9 +450,14 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     };
     
     $scope.setDescriptionLoc = function(type){
-    	if(type != "Staff" && type != "Consumable" && type != "Mystery") return "60px";
+    	if(type != "Mystery") return "60px";
     	else return "25px";
     };
+	
+	$scope.setItemDescHeight = function(type){
+		if(type != "Mystery") return "80px";
+    	else return "118px";
+	};
 
 	$scope.determineNametagColor = function(char){
 		if(char.indexOf("char_") != -1) return DEFAULT_NAMETAG_COLOR;
