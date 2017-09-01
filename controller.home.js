@@ -141,8 +141,8 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     	return pos != undefined && pos.indexOf("(") > -1;
     };
 
-    $scope.textTooLong = function(textA, textB){
-	return (textA.length + textB.length) > 150;
+    $scope.textTooLong = function(textB){
+	return (textB.length) > 150;
     };
 	// This was added in from Team E's doc.
     
