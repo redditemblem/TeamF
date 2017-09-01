@@ -364,9 +364,10 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 			'hit' : inv[5],
 			'crit' : inv[6],
 			'critMltpr' : inv[7],
-			'range' : inv[8],
-			'value' : inv[9],
-			'desc' : (inv[10] != undefined ? inv[10] : "")
+			'dmgType' : inv[8],
+			'range' : inv[9],
+			'value' : inv[10],
+			'desc' : (inv[11] != undefined ? inv[10] : "")
 		};
 	};
 
