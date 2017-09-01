@@ -256,11 +256,11 @@ img{
 /* Move it (define the animation) */
 @-moz-keyframes scroll-up {
  0%   { -moz-transform: translateY(100%); }
- 100% { -moz-transform: translateY(-100%); }
+ 100% { -moz-transform: translateY(-150%); }
 }
 @-webkit-keyframes scroll-up {
  0%   { -webkit-transform: translateY(100%); }
- 100% { -webkit-transform: translateY(-100%); }
+ 100% { -webkit-transform: translateY(-150%); }
 }
 @keyframes scroll-up {
  0%   { 
@@ -269,8 +269,8 @@ img{
  transform: translateY(100%); 		
  }
  100% { 
- -moz-transform: translateY(-100%); /* Browser bug fix */
- -webkit-transform: translateY(-100%); /* Browser bug fix */
- transform: translateY(-100%); 
+ -moz-transform: translateY(-150%); /* Browser bug fix */
+ -webkit-transform: translateY(-150%); /* Browser bug fix */
+ transform: translateY(-150%); 
  }
 }
