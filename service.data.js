@@ -102,7 +102,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
     	gapi.client.sheets.spreadsheets.values.get({
             spreadsheetId: sheetId,
             majorDimension: "ROWS",
-            range: 'Weapon Index!A:K',
+            range: 'Weapon Index!A:M',
           }).then(function(response) {
         	 itemIndex = response.result.values;
         	 updateProgressBar();
