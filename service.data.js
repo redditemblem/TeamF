@@ -367,7 +367,8 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 			'dmgType' : inv[8],
 			'range' : inv[9],
 			'value' : inv[10],
-			'desc' : (inv[11] != undefined ? inv[11] : "")
+			'effects' : inv[11],
+			'desc' : (inv[12] != undefined ? inv[12] : "")
 		};
 	};
 
