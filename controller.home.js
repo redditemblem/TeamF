@@ -140,6 +140,11 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     $scope.isPaired = function(pos){
     	return pos != undefined && pos.indexOf("(") > -1;
     };
+
+    $scope.textTooLong = function(textA, textB){
+	return (textA.length + textB.length) > 150;
+    };
+	// This was added in from Team E's doc.
     
     //Returns the image URL for the unit in the back of a pairup
     //0 = charaData, 1 = enemyData
