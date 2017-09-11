@@ -46,8 +46,12 @@ app.controller('AuthCtrl', ['$scope', '$location', '$interval', 'DataService', f
 			unavailableDiv.style.display = 'inline';
 		 }else{
 			authorizeDiv.style.display = 'none';
-    		loadingDiv.style.display = 'inline';
-    		DataService.loadMapData();
+			loadingDiv.style.display = 'inline';
+			
+			if(toggle == "Chapter Map")
+				DataService.loadMapData();
+			else
+				OverworldService.loadData();
 		 }
       });
 	};
