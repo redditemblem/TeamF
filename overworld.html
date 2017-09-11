@@ -1,0 +1,17 @@
+<div class="backgroundBox"></div>
+<div class="mapBox">
+    <img id="map" class="absolutePos" src="{{mapUrl}}">
+
+    <div ng-repeat="(iIndex, item) in mapItems" 
+         class="absolutePos"
+         ng-style="{top: item.y + 'px', left: item.x + 'px'}"
+         ng-mouseenter="itemHoverIn(iIndex)"
+         ng-mouseleave="itemHoverOut(iIndex)"
+    >
+        <img class="hoverImage" ng-src="{{item.spriteUrl}}" />
+        <div ng-show="itemHoverOn(iIndex)" class="green whiteText overworldDesc">
+            <div class="boldText popOutText popOutHeader">{{item.title}}</div>
+            <div class="popOutText popOutBody">{{item.desc}}</div>
+        </div>
+    </div>
+</div>

@@ -1,4 +1,4 @@
-app.controller('AuthCtrl', ['$scope', '$location', '$interval', 'DataService', function ($scope, $location, $interval, DataService) {
+app.controller('AuthCtrl', ['$scope', '$location', '$interval', 'DataService', 'OverworldService', function ($scope, $location, $interval, DataService, OverworldService) {
     var id = fetch();
 	var sheetId = '19OIsTc_rxylCoqq2JOIFwx3avsl-lQeqd4VD_NzrmBU';
     $scope.ready = false;
@@ -48,10 +48,8 @@ app.controller('AuthCtrl', ['$scope', '$location', '$interval', 'DataService', f
 			authorizeDiv.style.display = 'none';
 			loadingDiv.style.display = 'inline';
 			
-			if(toggle == "Chapter Map")
-				DataService.loadMapData();
-			else
-				OverworldService.loadData();
+			if(toggle == "Chapter Map") DataService.loadMapData();
+			else OverworldService.loadData();
 		 }
       });
 	};
@@ -85,15 +83,22 @@ app.controller('AuthCtrl', ['$scope', '$location', '$interval', 'DataService', f
     };
 
     //Redirect user to the map page once data has been loaded
-    function redirect(){
-    	$location.path('/map').replace();
+    function redirect(url){
+    	$location.path(url).replace();
     	$scope.$apply();
     };
 
     $scope.$on('loading-bar-updated', function(event, data) {
     	bar.value = data;
 		if(data >= 100){
-			redirect();
+			redirect("/map");
+		}	
+	});
+
+	$scope.$on('overworld-loading-bar-updated', function(event, data) {
+    	bar.value = data;
+		if(data >= 100){
+			redirect("/overworld");
 		}	
     });
 }]);

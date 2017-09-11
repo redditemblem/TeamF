@@ -274,3 +274,12 @@ img{
  transform: translateY(-300%); 
  }
 }
+
+.overworldDesc{
+	position: absolute;
+	border-radius: 10px;
+	width: 225px;
+	height: 100px;
+	top: -25px;
+	right: -230px;
+}

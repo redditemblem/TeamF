@@ -350,7 +350,7 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
     };
     
     function processImageURL(str){
-    	return str.substring(8, str.lastIndexOf(",")-1);
+    	return str.substring(str.indexOf("\"")+1, str.lastIndexOf("\""));
     };
 
 	function getItem(name){
