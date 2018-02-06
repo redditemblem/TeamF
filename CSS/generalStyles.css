@@ -49,33 +49,31 @@ img{
 }
 
 .hoverTan:hover{
-	background-color: #f2e4cc !important;
+	background-color: #f1f1f1 !important;
 	cursor: pointer !important;
 }
 
 .healthBarBack{
 	position: absolute;
-	width: 27px;
+	width: 29px;
 	height: 2px;
-	left: 2px;
-	top: 28px;
+	left: 1px;
+	bottom: 1px;
 	background-color: dimgray;
 }
 
 .healthBarFront{
 	position: absolute;
 	height: 2px;
-	left: 2px;
-	top: 28px;
-	background-color: red;
+	left: 1px;
+	bottom: 1px;
 }
 
 .healthBarBorder{
 	position: absolute;
-	width: 26px;
+	width: 29px;
 	height: 1px;
-	left: 2px;
-	top: 28px;
+	bottom: 1px;
 	border: 1px solid black;
 }
 
@@ -161,14 +159,14 @@ img{
 
 .mapCharOffsetLeft{
 	position:absolute;
-	left:-6px;
-	top:-3px;
+	left:-7px;
+	top:-4px;
 }
 
 .mapCharOffsetRight{
 	position:absolute;
-	left:6px;
-	top:3px;
+	left:7px;
+	top:4px;
 }
 
 .mapCharOffsetNone{
@@ -194,7 +192,7 @@ img{
 }
 
 .itemNamePos{
-	font-size: 14px !important;
+	font-size: 12px !important;
 	top: 4px;
 }
 
@@ -225,14 +223,19 @@ img{
 .italicText{ font-style: italic; }
 
 .navy{ background-color: #727472; }
-.paleTan{ background-color: #cecece; }
-.lightTan{ background-color: #e0e0e0; }
+.paleTan{ background-color: #d3d3d3; }
+.lightTan{ background-color: #ececec; }
 .yellowTan{ background-color: #c0c0c0 ; }
 .darkTan{ background-color: #727472; }
 .olive{ background-color: #212121; }
 .lightGreen{ background-color: #39af2b; }
 .green{ background-color: #5b0808; opacity: 0.95;}
 .blackBorder{ border: 1px solid black; }
+
+p{
+	margin: 0px;
+	padding: 0px;
+}
 
 .scroll-up {	
  overflow: hidden;

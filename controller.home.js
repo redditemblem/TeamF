@@ -141,8 +141,8 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     	return pos != undefined && pos.indexOf("(") > -1;
     };
 
-    $scope.textTooLong = function(textB){
-	return (textB.length) > 150;
+    $scope.textTooLong = function(textA, textB){
+	return (textA.length + textB.length) > 150;
     };
 	// This was added in from Team E's doc.
     
@@ -192,12 +192,15 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     
     //Parses an enemy's name to see if it contains a number at the end.
     //If it does, it returns that number
+   //Parses an enemy's name to see if it contains a number at the end.
+    //If it does, it returns that number
     $scope.getEnemyNum = function(name){
     	if(name.lastIndexOf(" ") == -1 || name == undefined)
     		return "";
-    	name = name.substring(name.lastIndexOf(" ")+1, name.length);
-    	
-    	if(name.match(/^[0-9]+$/) != null) return name;
+    	name = name.substring(name.lastIndexOf(" "), name.length);
+		name = name.trim();
+		
+    	if(name.match(/^[0-9]+$/) != null) return "IMG/NUM/num_" + name + ".png";
     	else return "";
     };
     
@@ -232,22 +235,19 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     
     //Relocate the information box relative to the clicked char
     function positionCharBox(char){
-    	var sprite = document.getElementById(char);
-    	var box = document.getElementById(char + '_box');
-    	
-		var x = sprite.style.left;
-    	var y = sprite.style.top;
-    	x = parseInt(x.substring(0, x.length-2));
-    	y = parseInt(y.substring(0, y.length-2));
-    	
-    	if(x < 671) x += 40;	
-    	else x -= 671;
-    	
-    	if(y < 77) y += 40;
-    	else y -= 77;
-    	
-    	box.style.left = x + 'px';
-    	box.style.top = y + 'px';
+		var sprite = document.getElementById(char);
+        var box = document.getElementById(char + '_box');
+
+        var x = sprite.style.left;
+        var y = sprite.style.top;
+        x = parseInt(x.substring(0, x.length - 2));
+        y = parseInt(y.substring(0, y.length - 2));
+
+        x = Math.min(x + ((gridWidth + boxWidth) * 2), (gridWidth + boxWidth) * ($scope.columns.length + 3));
+        if (y <= 20) y = 20;
+
+        box.style.left = x + 'px';
+        box.style.top = y + 'px';
     };
     
     $scope.fetchStatVerticalPos = function(index){ return statVerticalPos[index] };
@@ -262,7 +262,24 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     $scope.fetchEWeaponVerticalPos = function(index){ return eWeaponVerticalPos[index]; };
     $scope.fetchEWpnRankHorzPos = function(index){ return eWpnRankHorzPos[index]; };
     $scope.fetchESklDescHorzPos = function(index){ return eSklDescHorzPos[index]; };
-    $scope.fetchEWpnDescVerticalPos = function(index){ return eWpnDescVerticalPos[index]; };
+	$scope.fetchEWpnDescVerticalPos = function(index){ return eWpnDescVerticalPos[index]; };
+	
+	$scope.getHPPercent = function(currHp, maxHp){
+		currHp = parseInt(currHp) || 0;
+		maxHp = parseInt(maxHp) || 1;
+
+		return Math.min((currHp/maxHp)*(boxWidth-2), (boxWidth-2)) + "px";
+	};
+
+	$scope.determineHPBackgroundColor = function(currHp, maxHp){
+		currHp = parseInt(currHp) || 0;
+		maxHp = parseInt(maxHp) || 1;
+
+		if(currHp > maxHp) return "#c430ff";
+		else if((currHp/maxHp) > 0.5) return "#00e003";
+		else if((currHp/maxHp) > 0.25) return "#ffe100";
+		else return "red";
+	};
     
     //***********************\\
     // FUNCTIONS FOR STAT    \\
@@ -363,8 +380,13 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
 	$scope.getPairSupportRank = function(name, pos){
 		var supportRanks = DataService.getSupportIndex();
 		var partner = pos.substring(pos.indexOf("(")+1, pos.indexOf(")"));
-		var rank = supportRanks[name][partner];
-		if(rank != "-") return rank;
+
+		var ranks = supportRanks[name];
+		if(ranks == undefined) return "Could not locate unit";
+
+		var rank = ranks[partner];
+		if(rank == undefined) return "Could not locate partner";
+		else if(rank != "-") return rank;
 		else return "None";
 	};
 
@@ -427,7 +449,17 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     //Calculates the percentage of weapon proficicency for a specific weapon,
     //then returns the width of the progress bar in pixels
     $scope.calcWeaponExp = function(exp){
-		return ((exp/25) * (boxWidth-2));
+		exp = parseInt(exp) || 0;
+		
+		var toNextLvl;
+		if(exp < 10) toNextLvl = 10;
+		else if(exp < 30){ toNextLvl = 20; exp -= 10; } 
+		else if(exp < 70){ toNextLvl = 40; exp -= 30; }
+		else if(exp < 150){ toNextLvl = 80; exp -= 70; }
+		else if(exp < 300){ toNextLvl = 150; exp -= 150; }
+		else{ toNextLvl = 1; exp = 1; } //max at S rank
+
+		return (exp/toNextLvl) * 32;
     };
     
     //Checks if there is a value in the index
@@ -446,17 +478,17 @@ app.controller('HomeCtrl', ['$scope', '$location', '$interval', 'DataService', f
     
     //Returns true if the weapon at the index is not an item
     $scope.notItem = function(type){
-    	return type != "Staff" && type != "Consumable" && type != "Mystery";
+    	return type != "Consumable" && type != "Mystery";
     };
     
     $scope.setDescriptionLoc = function(type){
-    	if(type != "Mystery") return "60px";
+    	if(type != "Consumable" && type != "Mystery") return "60px";
     	else return "25px";
     };
 	
 	$scope.setItemDescHeight = function(type){
-		if(type != "Mystery") return "50px";
-    	else return "80px";
+		if(type != "Consumable" && type != "Mystery") return "90px";
+    	else return "120px";
 	};
 
 	$scope.determineNametagColor = function(char){

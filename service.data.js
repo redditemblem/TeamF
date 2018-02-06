@@ -258,6 +258,11 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 				for(var k = 22; k < 27; k++)
 					currObj.inventory["itm_" + (k-21)] = getItem(c[k]);
 
+				currObj.hit = calcHit(currObj);
+				currObj.crit = calcCrit(currObj);
+				currObj.atk = calcAtk(currObj);
+				currObj.avo = calcAvo(currObj);
+
 				characters["char_" + i] = currObj;
 			}
 		}
@@ -331,6 +336,11 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 				for(var k = 24; k < 29; k++)
 					currObj.inventory["itm_" + (k-23)] = getItem(e[k]);
 
+				currObj.hit = calcHit(currObj);
+				currObj.crit = calcCrit(currObj);
+				currObj.atk = calcAtk(currObj);
+				currObj.avo = calcAvo(currObj);
+
 				characters["enmy_" + i] = currObj;
 			}
     	}
@@ -367,7 +377,8 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 			'dmgType' : inv[8],
 			'range' : inv[9],
 			'value' : inv[10],
-			'desc' : (inv[12] != undefined ? inv[12] : "")
+			'effect' : inv[11] != undefined ? inv[11] : "",
+			'desc' : inv[12] != undefined ? inv[12] : ""
 		};
 	};
 
@@ -375,8 +386,8 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 		var skl = findSkill(name);
 		return {
 			'name' : skl[0],
-			'type' : skl[1],
-			'desc' : skl[2]
+			'desc' : skl[2],
+			'isCommand' : skl[1] == "Command"
 		};
 	};
 
@@ -455,4 +466,63 @@ app.service('DataService', ['$rootScope', function ($rootScope) {
 		return [name, "This trait could not be found.", ""]
 	};
 
+	///////////////////////
+	// STAT CALCULATIONS //
+	///////////////////////
+
+	//	Hit = (SKL * 2) + (LCK) + Weapon Hit.
+	function calcHit(currObj){
+		var hit = 0;
+
+		var equpt = currObj.inventory.itm_1;
+		if(equpt != undefined){
+			hit += (parseInt(equpt.hit) || 0);
+		}
+
+		hit += (parseInt(currObj.Skl) || 0) * 2;
+		hit += (parseInt(currObj.Lck) || 0);
+
+		return Math.floor(hit);
+	};
+
+	//Crit = (SKL / 2) + Weapon crit
+	function calcCrit(currObj){
+		var crit = 0;
+
+		var equpt = currObj.inventory.itm_1;
+		if(equpt != undefined){
+			crit += (parseInt(equpt.crit) || 0);
+		}
+
+		crit += ((parseInt(currObj.Skl) || 0) / 2);
+
+		return Math.floor(crit);
+	};
+
+	//ATK = STR or MAG (made easier by typing on the sheet into Physical/Magic) + weapon might + skill/passive bonuses - Foe's DT (DEF or RES)
+	function calcAtk(currObj){
+		var atk = 0;
+
+		var equpt = currObj.inventory.itm_1;
+		var atkStat = "";
+		if(equpt != undefined){
+			atk += (parseInt(equpt.might) || 0);
+			if(equpt.dmgType == "Physical") atkStat = "Str";
+			else if(equpt.dmgType == "Magic") atkStat = "Mag";
+		}
+
+		if(atkStat.length > 0) atk += (parseInt(currObj[atkStat]) || 0);
+		else atk += Math.max((parseInt(currObj.Str) || 0), (parseInt(currObj.Mag) || 0));
+
+		return Math.floor(atk);
+	};
+
+	//Avoid = (Attack Speed * 2) + (LCK) + skill/passive bonuses + terrain*/
+	function calcAvo(currObj){
+		var avo = 0;
+		avo += (parseInt(currObj.Spd) || 0) * 2;
+		avo += (parseInt(currObj.Lck) || 0);
+
+		return Math.floor(avo);
+	};
 }]);
